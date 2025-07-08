@@ -1,0 +1,167 @@
+#!/usr/bin/env node
+
+const { program } = require("commander");
+const chalk = require("chalk");
+const { execSync } = require("child_process");
+const yday = require("../src/index");
+
+// Check for required dependencies
+function checkDependencies() {
+  const dependencies = [
+    {
+      name: "git-standup",
+      command: "which git-standup", // Changed to 'which' command
+      install: "npm install -g git-standup",
+      required: true,
+    },
+    {
+      name: "gh",
+      command: "which gh", // Changed to 'which' command
+      install: "brew install gh",
+      required: false,
+      requiredFor: "--shadow mode",
+    },
+  ];
+
+  let hasErrors = false;
+
+  for (const dep of dependencies) {
+    try {
+      const result = execSync(dep.command, { encoding: "utf8" }).trim();
+      if (process.argv.includes("--verbose") || process.argv.includes("-v")) {
+        console.log(chalk.gray(`Found ${dep.name} at: ${result}`));
+      }
+    } catch (error) {
+      if (dep.required) {
+        console.error(
+          chalk.red(`Error: ${dep.name} is required but not installed.`),
+        );
+        console.error(chalk.yellow(`Install with: ${dep.install}`));
+        hasErrors = true;
+      } else if (process.argv.includes("--shadow")) {
+        console.error(
+          chalk.red(
+            `Error: ${dep.name} is required for ${dep.requiredFor} but not installed.`,
+          ),
+        );
+        console.error(chalk.yellow(`Install with: ${dep.install}`));
+        hasErrors = true;
+      }
+    }
+  }
+
+  if (hasErrors) {
+    process.exit(1);
+  }
+}
+
+program
+  .name("yday")
+  .description(
+    "Git retrospective analysis tool - smart views of recent development work",
+  )
+  .version("0.1.0")
+  .usage("[options]")
+  .addHelpText("before", "\n📜 yday - What have I been working on?\n")
+  .addHelpText(
+    "after",
+    `
+Examples:
+
+  Default (yesterday's work, or Friday's on Monday):
+    $ yday
+
+  Semantic summary output:
+    ## Git Repository Activity in ~/workspace (yesterday, Friday July 05)...
+
+    | Repo        | Commits | Summary                          |
+    |-------------|---------|----------------------------------|
+    | my-app      | 3       | Building authentication system   |
+    | api-service | 1       | Fixing database connection issue |
+
+  Show last 3 days:
+    $ yday --days 3
+
+  Custom date range:
+    $ yday --after 2025-07-01 --before 2025-07-05
+    $ yday -A "Jul 1 2025"
+    $ yday -B "2025/07/31"
+
+  Visual timeline (NOT YET IMPLEMENTED):
+    $ yday --alastair
+
+  Find untracked work (NOT YET IMPLEMENTED):
+    $ yday --shadow
+
+  List all projects:
+    $ yday --projects
+
+Configuration:
+  Default parent directory: ~/workspace
+  Config file: ~/.config/yday.yml (NOT YET IMPLEMENTED)
+
+Requirements:
+  - git-standup (install with: npm install -g git-standup)
+  - gh CLI for --shadow mode (install with: brew install gh)
+
+For more information: https://github.com/discoveryworks/yday
+`,
+  )
+  .option(
+    "-a, --alastair",
+    "[NOT YET IMPLEMENTED] - show visual timeline view (MTWRFSs pattern)",
+  )
+  .option("-d, --days <number>", "since N days ago (git-standup -d)", parseInt)
+  .option("-u, --until <number>", "until N days ago (git-standup -u)", parseInt)
+  .option("-A, --after <date>", "after date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')", String)
+  .option("-B, --before <date>", "before date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')", String)
+  .option(
+    "--on <number>",
+    "commits from exactly N days ago (single day)",
+    parseInt,
+  )
+  .option("--last-workday", "show last business day (skips weekends)")
+  .option("--last-monday", "show last Monday's commits")
+  .option("--last-tuesday", "show last Tuesday's commits")
+  .option("--last-wednesday", "show last Wednesday's commits")
+  .option("--last-thursday", "show last Thursday's commits")
+  .option("--last-friday", "show last Friday's commits")
+  .option("--last-saturday", "show last Saturday's commits")
+  .option("--last-sunday", "show last Sunday's commits")
+  .option("--projects", "list all git projects found in parent directory")
+  .option(
+    "--shadow",
+    "[NOT YET IMPLEMENTED] - find repos with commits but no GitHub project tracking",
+  )
+  .option("-t, --today", "show today's commits")
+  .option(
+    "--parent <path>",
+    "parent directory to scan for git repos",
+    process.env.HOME + "/workspace",
+  )
+  .option("--org <name>", "GitHub organization for --shadow mode")
+  .option(
+    "--project <number>",
+    "GitHub project number for --shadow mode",
+    parseInt,
+  )
+  .option("-v, --verbose", "enable verbose output for debugging")
+  .action(async (options) => {
+    try {
+      // Check dependencies before running
+      checkDependencies();
+
+      await yday.run(options);
+    } catch (error) {
+      console.error(chalk.red("Error:"), error.message);
+      process.exit(1);
+    }
+  });
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error(chalk.red("Unhandled promise rejection:"), reason);
+  process.exit(1);
+});
+
+program.parse();
