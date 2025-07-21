@@ -66,6 +66,7 @@ yday [-a, --alastair]
      [--projects]
      [--shadow]
      [-t, --today]
+     [-v, --verbose]
 ```
 
 ### Show yesterday's work (or Friday's on Monday)
@@ -125,6 +126,17 @@ yday --projects
     - my-app-ios
     - api-service
     - docs-site
+
+### Debug with verbose output
+```shell
+yday --verbose -d 3
+```
+
+Shows debug information including:
+- Dependency paths
+- Configuration options
+- Time period calculations
+- Git-standup command execution
 
 
 ## Configuration
