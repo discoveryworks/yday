@@ -87,7 +87,7 @@ Examples:
     $ yday -A "Jul 1 2025"
     $ yday -B "2025/07/31"
 
-  Visual timeline (NOT YET IMPLEMENTED):
+  Visual timeline (basic patterns):
     $ yday --alastair
 
   Find untracked work (NOT YET IMPLEMENTED):
@@ -109,7 +109,7 @@ For more information: https://github.com/discoveryworks/yday
   )
   .option(
     "-a, --alastair",
-    "[NOT YET IMPLEMENTED] - show visual timeline view (MTWRFSs pattern)",
+    "show visual timeline view (MTWRFSs pattern) - basic implementation",
   )
   .option("-d, --days <number>", "since N days ago (git-standup -d)", parseInt)
   .option("-u, --until <number>", "until N days ago (git-standup -u)", parseInt)

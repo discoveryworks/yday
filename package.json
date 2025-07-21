@@ -1,12 +1,39 @@
 {
   "name": "yday",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Git retrospective analysis tool - smart views of recent development work",
+  "main": "src/index.js",
+  "bin": {
+    "yday": "bin/yday"
+  },
   "scripts": {
+    "start": "node bin/yday",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "keywords": [
+    "git",
+    "retrospective", 
+    "commit",
+    "analysis",
+    "standup",
+    "workflow"
+  ],
+  "author": "JPB",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2",
+    "yaml": "^2.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/discoveryworks/yday.git"
+  },
+  "bugs": {
+    "url": "https://github.com/discoveryworks/yday/issues"
+  },
+  "homepage": "https://github.com/discoveryworks/yday#readme"
 }
