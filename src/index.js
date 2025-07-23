@@ -136,15 +136,24 @@ class Yday {
     
     console.log(`Alastair timeline for the week beginning ${mondayFormatted}\n`);
     
-    console.log('| MTWRFSs | Project     | Commits |');
-    console.log('| ------- | ----------- |---------|');
+    // Calculate column widths for proper alignment
+    const maxProjectWidth = Math.max(7, ...timeline.items.map(item => item.project.length)); // Min 7 for "Project"
+    const maxCommitsWidth = Math.max(7, ...timeline.items.map(item => item.commits.toString().length)); // Min 7 for "Commits"
+    
+    // Print header with proper padding
+    const patternHeader = 'MTWRFSs'.padEnd(7);
+    const projectHeader = 'Project'.padEnd(maxProjectWidth);
+    const commitsHeader = 'Commits'.padEnd(maxCommitsWidth);
+    
+    console.log(`| ${patternHeader} | ${projectHeader} | ${commitsHeader} |`);
+    console.log(`|${'-'.repeat(9)}|${'-'.repeat(maxProjectWidth + 2)}|${'-'.repeat(maxCommitsWidth + 2)}|`);
     
     for (const item of timeline.items) {
       const pattern = item.pattern.padEnd(7);
-      const project = item.project.padEnd(11);
-      const commits = item.commits.toString();
+      const project = item.project.padEnd(maxProjectWidth);
+      const commits = item.commits.toString().padEnd(maxCommitsWidth);
       
-      console.log(`| ${pattern} | ${project} | ${commits}       |`);
+      console.log(`| ${pattern} | ${project} | ${commits} |`);
     }
     
     // Add legend
