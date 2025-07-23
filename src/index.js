@@ -130,6 +130,13 @@ class Yday {
       
       console.log(`| ${pattern} | ${project} | ${commits}       |`);
     }
+    
+    // Add legend
+    console.log('\nLegend:');
+    console.log('  x = High activity day (3+ commits)');
+    console.log('  / = Some activity day (1-2 commits)');
+    console.log('  · = No activity');
+    console.log('  M T W R F S s = Mon Tue Wed Thu Fri Sat Sun');
   }
 
   renderShadowTable(analysis) {
