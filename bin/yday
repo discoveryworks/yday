@@ -146,8 +146,14 @@ For more information: https://github.com/discoveryworks/yday
     parseInt,
   )
   .option("-v, --verbose", "enable verbose output for debugging")
-  .action(async (options) => {
+  .action(async (options, command) => {
     try {
+      // Check if help was requested - Commander.js handles help automatically
+      // but we need to prevent our action from running
+      if (process.argv.includes('--help') || process.argv.includes('-h')) {
+        return;
+      }
+      
       // Check dependencies before running
       checkDependencies();
 
