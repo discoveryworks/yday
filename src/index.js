@@ -74,7 +74,7 @@ class Yday {
     const commits = await this.gitAnalysis.getCommits(options.parent, timeConfig);
     const timeline = this.timeline.generate(commits, timeConfig);
     
-    this.renderTimelineTable(timeline);
+    this.renderTimelineTable(timeline, timeConfig);
   }
 
   async showSemantic(options, timeConfig) {
@@ -119,7 +119,23 @@ class Yday {
     }
   }
 
-  renderTimelineTable(timeline) {
+  renderTimelineTable(timeline, timeConfig) {
+    // Calculate the Monday of the current week
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust for Sunday being 0
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - daysFromMonday);
+    
+    const mondayFormatted = monday.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'long', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+    
+    console.log(`Alastair timeline for the week beginning ${mondayFormatted}\n`);
+    
     console.log('| MTWRFSs | Project     | Commits |');
     console.log('| ------- | ----------- |---------|');
     
