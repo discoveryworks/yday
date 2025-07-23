@@ -15,10 +15,15 @@ class Semantic {
     };
   }
 
-  generateSummary(commitMessages, projectName) {
-    if (!commitMessages || commitMessages.length === 0) {
+  generateSummary(commits, projectName) {
+    if (!commits || commits.length === 0) {
       return "No meaningful commits";
     }
+    
+    // Extract messages from commit objects (handle both old string format and new object format)
+    const commitMessages = commits.map(commit => 
+      typeof commit === 'string' ? commit : commit.message
+    );
     
     // Clean up messages: remove noise and standardize format
     const cleanMessages = this.cleanCommitMessages(commitMessages);

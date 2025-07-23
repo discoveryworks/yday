@@ -177,16 +177,21 @@ class GitAnalysis {
       
       // Check if this line contains commit info (starts with hash and has " - ")
       if (line.match(/^[a-f0-9]+.*\s-\s/)) {
-        // Extract commit message (everything after " - ")
-        const messageMatch = line.match(/^[a-f0-9]+.*\s-\s(.+)$/);
-        if (messageMatch) {
-          let commitMessage = messageMatch[1];
-          // Remove timestamp and author info at the end
-          commitMessage = commitMessage.replace(/\s\([^)]*\sago\)\s<[^>]*>.*$/, '');
-          commitMessage = commitMessage.trim();
+        // Extract commit message and timestamp
+        const commitMatch = line.match(/^[a-f0-9]+.*\s-\s(.+)\s\(([^)]*\sago)\)\s<[^>]*>.*$/);
+        if (commitMatch) {
+          let commitMessage = commitMatch[1].trim();
+          const timeAgo = commitMatch[2]; // e.g., "2 minutes ago", "3 hours ago", "1 day ago"
           
           if (commitMessage) {
-            currentCommits.push(commitMessage);
+            // Parse the time ago string to get a date
+            const commitDate = this.parseTimeAgo(timeAgo);
+            
+            currentCommits.push({
+              message: commitMessage,
+              date: commitDate,
+              timeAgo: timeAgo
+            });
           }
         }
       }
@@ -217,6 +222,37 @@ class GitAnalysis {
       parentDir,
       repos: result
     };
+  }
+
+  // Parse "time ago" strings from git-standup into actual dates
+  parseTimeAgo(timeAgo) {
+    const now = new Date();
+    
+    // Parse patterns like "2 minutes ago", "3 hours ago", "1 day ago"
+    const match = timeAgo.match(/^(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago$/);
+    if (!match) {
+      return now; // Fallback to now if we can't parse
+    }
+    
+    const value = parseInt(match[1]);
+    const unit = match[2];
+    
+    switch (unit) {
+      case 'minute':
+        return new Date(now.getTime() - value * 60 * 1000);
+      case 'hour':
+        return new Date(now.getTime() - value * 60 * 60 * 1000);
+      case 'day':
+        return new Date(now.getTime() - value * 24 * 60 * 60 * 1000);
+      case 'week':
+        return new Date(now.getTime() - value * 7 * 24 * 60 * 60 * 1000);
+      case 'month':
+        return new Date(now.getTime() - value * 30 * 24 * 60 * 60 * 1000);
+      case 'year':
+        return new Date(now.getTime() - value * 365 * 24 * 60 * 60 * 1000);
+      default:
+        return now;
+    }
   }
 
   // Helper method to get remote repository URL
