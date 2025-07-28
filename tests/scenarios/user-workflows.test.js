@@ -22,7 +22,7 @@ describe('User Workflow Scenarios', () => {
         const timeConfig = timePeriods.getLastDay('tuesday');
         
         // When I run the semantic analysis
-        const commits = await gitAnalysis.getCommits('/Users/jpb/workspace', timeConfig);
+        const commits = await gitAnalysis.getCommits('/Users/developer/workspace', timeConfig);
         const analysis = semantic.analyze(commits);
         
         // Then I should see a focused list of Tuesday's work
@@ -44,7 +44,7 @@ describe('User Workflow Scenarios', () => {
         
         // When I request the timeline view
         const timelineTimeConfig = getTimelineTimeConfig(timeConfig);
-        const commits = await gitAnalysis.getCommits('/Users/jpb/workspace', timelineTimeConfig);
+        const commits = await gitAnalysis.getCommits('/Users/developer/workspace', timelineTimeConfig);
         const timelineResult = timeline.generate(commits, timeConfig, true);
         
         // Then I should see a week view
@@ -71,11 +71,11 @@ describe('User Workflow Scenarios', () => {
         const timeConfig = timePeriods.getLastDay('tuesday');
         
         // When I get both semantic and timeline data
-        const semanticCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', timeConfig);
+        const semanticCommits = await gitAnalysis.getCommits('/Users/developer/workspace', timeConfig);
         const semanticAnalysis = semantic.analyze(semanticCommits);
         
         const timelineTimeConfig = getTimelineTimeConfig(timeConfig);
-        const timelineCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', timelineTimeConfig);
+        const timelineCommits = await gitAnalysis.getCommits('/Users/developer/workspace', timelineTimeConfig);
         const timelineResult = timeline.generate(timelineCommits, timeConfig, true);
         
         // Then repos that appear in semantic should have matching Tuesday counts in timeline
@@ -99,10 +99,10 @@ describe('User Workflow Scenarios', () => {
         const wednesdayConfig = timePeriods.getLastDay('wednesday');
         
         // When I get semantic analysis for both days
-        const tuesdayCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', tuesdayConfig);
+        const tuesdayCommits = await gitAnalysis.getCommits('/Users/developer/workspace', tuesdayConfig);
         const tuesdayAnalysis = semantic.analyze(tuesdayCommits);
         
-        const wednesdayCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', wednesdayConfig);
+        const wednesdayCommits = await gitAnalysis.getCommits('/Users/developer/workspace', wednesdayConfig);
         const wednesdayAnalysis = semantic.analyze(wednesdayCommits);
         
         // Then the work should be different (unless it was an unusual week)
@@ -132,7 +132,7 @@ describe('User Workflow Scenarios', () => {
       };
       
       // When I request analysis
-      const commits = await gitAnalysis.getCommits('/Users/jpb/workspace', farPastConfig);
+      const commits = await gitAnalysis.getCommits('/Users/developer/workspace', farPastConfig);
       const analysis = semantic.analyze(commits);
       
       // Then it should return results without crashing (some old repos may exist)
@@ -154,7 +154,7 @@ describe('User Workflow Scenarios', () => {
       // When/Then each should not crash the system
       invalidConfigs.forEach(config => {
         expect(() => {
-          const args = gitAnalysis.buildStandupArgs('/Users/jpb/workspace', config);
+          const args = gitAnalysis.buildStandupArgs('/Users/developer/workspace', config);
           expect(Array.isArray(args)).toBe(true);
         }).not.toThrow();
       });

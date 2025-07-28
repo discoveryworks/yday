@@ -17,7 +17,7 @@ async function debugLiveData() {
 
   // Get semantic data (single day)
   console.log('\n--- SEMANTIC ANALYSIS (Tuesday only) ---');
-  const semanticCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', timeConfig);
+  const semanticCommits = await gitAnalysis.getCommits('/Users/developer/workspace', timeConfig);
   const semanticAnalysis = semantic.analyze(semanticCommits);
   
   console.log(`Found ${semanticAnalysis.repos.length} repos in semantic analysis:`);
@@ -50,7 +50,7 @@ async function debugLiveData() {
     days: daysDiff
   };
 
-  const timelineCommits = await gitAnalysis.getCommits('/Users/jpb/workspace', weekTimeConfig);
+  const timelineCommits = await gitAnalysis.getCommits('/Users/developer/workspace', weekTimeConfig);
   const timelineAnalysis = timeline.generate(timelineCommits, timeConfig, true);
   
   console.log(`Found ${timelineAnalysis.items.length} repos in timeline analysis:`);

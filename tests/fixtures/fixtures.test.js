@@ -28,7 +28,7 @@ describe('Test Fixtures Validation', () => {
         
         // Should be parseable by our parser
         const mockTimeConfig = { type: 'test', days: 7 };
-        const result = gitAnalysis.parseStandupOutput(content, '/Users/jpb/workspace', mockTimeConfig);
+        const result = gitAnalysis.parseStandupOutput(content, '/Users/developer/workspace', mockTimeConfig);
         
         expect(result.repos).toBeDefined();
         expect(Array.isArray(result.repos)).toBe(true);
@@ -45,8 +45,8 @@ describe('Test Fixtures Validation', () => {
 
       const mockTimeConfig = { type: 'test', days: 7 };
       
-      const weekResult = gitAnalysis.parseStandupOutput(weekContent, '/Users/jpb/workspace', mockTimeConfig);
-      const tuesdayResult = gitAnalysis.parseStandupOutput(tuesdayContent, '/Users/jpb/workspace', mockTimeConfig);
+      const weekResult = gitAnalysis.parseStandupOutput(weekContent, '/Users/developer/workspace', mockTimeConfig);
+      const tuesdayResult = gitAnalysis.parseStandupOutput(tuesdayContent, '/Users/developer/workspace', mockTimeConfig);
 
       expect(weekResult.repos.length).toBeGreaterThanOrEqual(tuesdayResult.repos.length);
       
@@ -64,7 +64,7 @@ describe('Test Fixtures Validation', () => {
       const content = await fs.readFile(weekPath, 'utf8');
 
       const mockTimeConfig = { type: 'test', days: 7 };
-      const result = gitAnalysis.parseStandupOutput(content, '/Users/jpb/workspace', mockTimeConfig);
+      const result = gitAnalysis.parseStandupOutput(content, '/Users/developer/workspace', mockTimeConfig);
 
       // Check that all commits have valid dates
       for (const repo of result.repos) {
@@ -126,7 +126,7 @@ describe('Test Fixtures Validation', () => {
         days: 6
       };
 
-      const result = gitAnalysis.parseStandupOutput(fixtureContent, '/Users/jpb/workspace', mockTimeConfig);
+      const result = gitAnalysis.parseStandupOutput(fixtureContent, '/Users/developer/workspace', mockTimeConfig);
 
       // The fixture should contain all expected repos
       const fixtureRepoNames = new Set(result.repos.map(r => r.name));
@@ -146,7 +146,7 @@ describe('Test Fixtures Validation', () => {
       const fixtureContent = await fs.readFile(weekFixturePath, 'utf8');
 
       const mockTimeConfig = { type: 'test', days: 7 };
-      const fixtureResult = gitAnalysis.parseStandupOutput(fixtureContent, '/Users/jpb/workspace', mockTimeConfig);
+      const fixtureResult = gitAnalysis.parseStandupOutput(fixtureContent, '/Users/developer/workspace', mockTimeConfig);
 
       // Fixture should have reasonable data
       expect(fixtureResult.repos.length).toBeGreaterThan(0);

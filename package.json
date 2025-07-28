@@ -24,7 +24,7 @@
     "standup",
     "workflow"
   ],
-  "author": "JPB",
+  "author": "Developer",
   "license": "MIT",
   "engines": {
     "node": ">=16.0.0"

@@ -16,7 +16,7 @@ class YdayWorld {
     this.lastTimelineResult = null;
     this.lastCommits = null;
     this.lastTimeConfig = null;
-    this.workspace = '/Users/jpb/workspace';
+    this.workspace = '/Users/developer/workspace';
   }
 
   async getSemanticAnalysis(day) {

@@ -76,7 +76,7 @@ yday
 
 might return
 
-    ## Git Repository Activity in /Users/jpb/workspace (yesterday, Friday July 05)...
+    ## Git Repository Activity in /Users/developer/workspace (yesterday, Friday July 05)...
 
     | Repo                | Commits | Summary                           |
     |---------------------|---------|-----------------------------------|

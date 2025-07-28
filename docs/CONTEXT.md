@@ -3,7 +3,7 @@
 ## Current State of `yday` Project
 
 ### Project Structure
-- **Repository**: `/Users/jpb/workspace/yday` (separate from dot-rot)
+- **Repository**: `/Users/developer/workspace/yday` (separate from other projects)
 - **Type**: Node.js CLI tool for git retrospective analysis
 - **Status**: Phase 1 implementation (core semantic analysis)
 

@@ -14,7 +14,7 @@ Given('I have a git workspace', function () {
   timeline = new Timeline();
   semantic = new Semantic();
   
-  this.workspace = '/Users/jpb/workspace';
+  this.workspace = '/Users/developer/workspace';
   expect(this.workspace).to.exist;
 });
 
@@ -24,7 +24,7 @@ Given('I have a workspace with git repositories', function () {
   timeline = new Timeline();
   semantic = new Semantic();
   
-  this.workspace = '/Users/jpb/workspace';
+  this.workspace = '/Users/developer/workspace';
   expect(this.workspace).to.exist;
 });
 
@@ -38,7 +38,7 @@ Given('I am in a workspace with multiple git repositories', function () {
   timeline = new Timeline();
   semantic = new Semantic();
   
-  this.workspace = '/Users/jpb/workspace';
+  this.workspace = '/Users/developer/workspace';
   expect(this.workspace).to.exist;
 });
 
