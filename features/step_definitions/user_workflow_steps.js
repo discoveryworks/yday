@@ -3,6 +3,7 @@ const { expect } = require('chai');
 const path = require('path');
 const GitLogParser = require('../../scripts/parse_gitlog');
 const fs = require('fs');
+const timeTraveler = require('../../tests/utils/time_travel');
 
 // Import the actual yday modules for testing
 const Semantic = require('../../src/semantic');
@@ -17,17 +18,18 @@ Given('I keep all my repos in `~\\/workspace`', function () {
   this.workspacePath = '~/workspace';
 });
 
-Given('a log of my recent commits can be found in week_sample', function () {
+Given('a log of my recent commits can be found in rails_sample', function () {
   // Load and parse the git log fixture
-  const fixturePath = path.join(__dirname, '../../tests/fixtures/week_sample.gitlog');
+  const fixturePath = path.join(__dirname, '../../tests/fixtures/rails_sample.gitlog');
   const gitlogContent = fs.readFileSync(fixturePath, 'utf8');
   const parser = new GitLogParser();
   gitLogData = parser.parse(gitlogContent);
 });
 
-Given('it\'s {int}\\/{int}', function (month, day) {
-  // Parse dates like "7/24" to mean "2025-07-24" in UTC
-  currentDate = new Date(Date.UTC(2025, month - 1, day));
+Given('it\'s {int}-{int}-{int}', function (year, month, day) {
+  // Parse dates like "2023-10-24" and freeze time there (like Timecop)
+  currentDate = new Date(Date.UTC(year, month - 1, day));
+  timeTraveler.freeze(currentDate);
   this.currentDate = currentDate;
 });
 
@@ -133,6 +135,17 @@ Then('I should see the message {string}', function (expectedMessage) {
   expect(this.lastResult.message).to.equal(expectedMessage);
 });
 
+// Setup and teardown for time travel
+require('@cucumber/cucumber').Before(function() {
+  // Ensure time is unfrozen at start of each scenario
+  timeTraveler.unfreeze();
+});
+
+require('@cucumber/cucumber').After(function() {
+  // Unfreeze time after each scenario (like Timecop cleanup)
+  timeTraveler.unfreeze();
+});
+
 // Helper methods attached to the world context
 require('@cucumber/cucumber').Before(function() {
   this.getCommitsForDate = function(targetDate) {
@@ -214,17 +227,9 @@ require('@cucumber/cucumber').Before(function() {
           // Monday scenario: use total commits for all repos with filtered commits
           commitCount = originalRepo.commitCount;
         } else {
-          // Other days: use filtered count + Monday boost for specific repos
+          // Other days: use filtered count 
           commitCount = filteredRepo.commitCount;
-          const mondayDate = new Date('2025-07-28T00:00:00.000Z');
-          const mondayCommits = originalRepo.commits.filter(c => 
-            c.authorDate.getTime() === mondayDate.getTime()
-          ).length;
-          
-          // Only add Monday commits for specific repos that should get them
-          if (repoName === 'cli-tools' || repoName === 'productivity-app') {
-            commitCount += mondayCommits;
-          }
+          // Note: Rails data doesn't have the Monday pattern from the previous test data
         }
         
         return {
@@ -237,10 +242,7 @@ require('@cucumber/cucumber').Before(function() {
         const pattern = '·······'; // All dots
         let commitCount = originalRepo.commitCount;
         
-        // Special case for readme-generator data discrepancy
-        if (repoName === 'readme-generator') {
-          commitCount = 6; // Use actual value from anonymized data
-        }
+        // Use the total commit count for repositories without filtered commits
         
         return {
           pattern: pattern,
