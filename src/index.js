@@ -72,9 +72,9 @@ class Yday {
 
   async showTimeline(options, timeConfig) {
     const commits = await this.gitAnalysis.getCommits(options.parent, timeConfig);
-    const timeline = this.timeline.generate(commits, timeConfig);
+    const timeline = this.timeline.generate(commits, timeConfig, options.numbers);
     
-    this.renderTimelineTable(timeline, timeConfig, options.details);
+    this.renderTimelineTable(timeline, timeConfig, options.details, options.numbers);
   }
 
   async showSemantic(options, timeConfig) {
@@ -119,7 +119,7 @@ class Yday {
     }
   }
 
-  renderTimelineTable(timeline, timeConfig, showDetails = false) {
+  renderTimelineTable(timeline, timeConfig, showDetails = false, showNumbers = false) {
     // Calculate the Monday of the current week
     const now = new Date();
     const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -159,10 +159,24 @@ class Yday {
     // Add legend only if details flag is set
     if (showDetails) {
       console.log('\nLegend:');
-      console.log('  x = High activity day (3+ commits)');
-      console.log('  / = Some activity day (1-2 commits)');
-      console.log('  · = No activity');
+      if (showNumbers) {
+        console.log('  0-9 = Number of commits that day');
+        console.log('  + = 10 or more commits');
+        console.log('  · = No activity');
+      } else {
+        console.log('  x = High activity day (3+ commits)');
+        console.log('  / = Some activity day (1-2 commits)');
+        console.log('  · = No activity');
+      }
       console.log('  M T W R F S s = Mon Tue Wed Thu Fri Sat Sun');
+    }
+    
+    // Show exceptions for repos using commit dates instead of author dates
+    if (timeline.exceptions && timeline.exceptions.length > 0) {
+      console.log('\nNote: The following repos are using commit dates rather than author dates:');
+      timeline.exceptions.forEach(repo => {
+        console.log(`  - ${repo}`);
+      });
     }
   }
 

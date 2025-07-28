@@ -153,6 +153,7 @@ For more information: https://github.com/discoveryworks/yday
   )
   .option("-v, --verbose", "enable verbose output for debugging")
   .option("--details", "show detailed legend and explanations")
+  .option("--numbers", "show commit counts instead of symbols in timeline")
   .action(async (options, command) => {
     try {
       // Check if help was requested - Commander.js handles help automatically
