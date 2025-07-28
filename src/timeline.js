@@ -4,7 +4,7 @@ class Timeline {
     const exceptions = [];
     
     const items = repos.map(repo => {
-      const result = this.generateRealPattern(repo, showNumbers);
+      const result = this.generateRealPattern(repo, timeConfig, showNumbers);
       
       // Track repos that needed to use commit dates
       if (result.usedCommitDate) {
@@ -21,13 +21,23 @@ class Timeline {
     return { items, exceptions };
   }
 
-  generateRealPattern(repo, showNumbers = false) {
-    // Get the current week's Monday
-    const now = new Date();
-    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  generateRealPattern(repo, timeConfig, showNumbers = false) {
+    // Determine which week to analyze
+    let referenceDate;
+    
+    if (timeConfig && timeConfig.startDate) {
+      referenceDate = new Date(timeConfig.startDate);
+    } else if (timeConfig && timeConfig.type && timeConfig.type.startsWith('last-')) {
+      referenceDate = new Date(timeConfig.startDate);
+    } else {
+      // Default to current week
+      referenceDate = new Date();
+    }
+    
+    const dayOfWeek = referenceDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - daysFromMonday);
+    const monday = new Date(referenceDate);
+    monday.setDate(referenceDate.getDate() - daysFromMonday);
     monday.setHours(0, 0, 0, 0); // Start of day
     
     // Create array for each day of the week (Mon-Sun)

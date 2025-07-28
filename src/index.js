@@ -120,12 +120,24 @@ class Yday {
   }
 
   renderTimelineTable(timeline, timeConfig, showDetails = false, showNumbers = false) {
-    // Calculate the Monday of the current week
-    const now = new Date();
-    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    // Calculate the Monday of the week we're analyzing
+    let referenceDate;
+    
+    // Use the timeConfig to determine which week to show
+    if (timeConfig.startDate) {
+      referenceDate = new Date(timeConfig.startDate);
+    } else if (timeConfig.type && timeConfig.type.startsWith('last-')) {
+      // For last-day queries, use that specific date
+      referenceDate = new Date(timeConfig.startDate);
+    } else {
+      // Default to current week
+      referenceDate = new Date();
+    }
+    
+    const dayOfWeek = referenceDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust for Sunday being 0
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - daysFromMonday);
+    const monday = new Date(referenceDate);
+    monday.setDate(referenceDate.getDate() - daysFromMonday);
     
     const mondayFormatted = monday.toLocaleDateString('en-US', { 
       weekday: 'long', 
