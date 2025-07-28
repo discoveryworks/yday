@@ -187,10 +187,13 @@ class Yday {
     
     // Show exceptions for repos using commit dates instead of author dates
     if (timeline.exceptions && timeline.exceptions.length > 0) {
-      console.log('\nNote: The following repos are using commit dates rather than author dates:');
+      console.log('\n⚠️  ***** THESE RESULTS USED COMMIT DATE RATHER THAN AUTHOR DATE *****');
+      console.log('The following repos had no activity in the target week based on author dates,');
+      console.log('but showed activity when using commit dates (likely due to rebasing):');
       timeline.exceptions.forEach(repo => {
         console.log(`  - ${repo}`);
       });
+      console.log('Use single-day queries (--last-tuesday) for precise author date results.');
     }
   }
 

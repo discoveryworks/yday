@@ -73,8 +73,13 @@ class Timeline {
     }
     
     // Smart detection: if week is blank but we have commits, try commit dates
+    // BUT: disable for single-day queries to maintain precision
     const totalWeekCommits = weekDays.reduce((sum, day) => sum + day.commits, 0);
-    if (totalWeekCommits === 0 && repo.commitCount > 0 && repo.commits && Array.isArray(repo.commits)) {
+    const isSingleDayQuery = timeConfig && timeConfig.type && timeConfig.type.startsWith('last-') && 
+                            timeConfig.startDate && timeConfig.endDate && 
+                            timeConfig.startDate.getTime() === timeConfig.endDate.getTime();
+    
+    if (totalWeekCommits === 0 && repo.commitCount > 0 && repo.commits && Array.isArray(repo.commits) && !isSingleDayQuery) {
       usedCommitDate = true;
       
       // Reset and try with commit dates (approximated from "time ago")
