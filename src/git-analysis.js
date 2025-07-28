@@ -74,8 +74,13 @@ class GitAnalysis {
       // For smart yesterday, show since N days ago (not limited by -u)
       args.push('-d', timeConfig.days.toString());
     } else if (timeConfig.days === 1) {
-      // Show only yesterday
-      args.push('-d', '1', '-u', '1');
+      // Show only yesterday - use -d 1 -u 0 to get exactly yesterday
+      args.push('-d', '1', '-u', '0');
+    } else if (timeConfig.type && timeConfig.type.startsWith('last-') && timeConfig.startDate && timeConfig.endDate && timeConfig.startDate.getTime() === timeConfig.endDate.getTime()) {
+      // Single day query (startDate === endDate) - show only that day
+      // Use -d X -u (X-1) to get commits from exactly X days ago
+      const until = Math.max(0, timeConfig.days - 1);
+      args.push('-d', timeConfig.days.toString(), '-u', until.toString());
     } else {
       // For multiple days, -d shows "since N days ago"
       args.push('-d', timeConfig.days.toString());
