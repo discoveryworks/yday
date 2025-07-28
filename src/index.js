@@ -71,7 +71,10 @@ class Yday {
   }
 
   async showTimeline(options, timeConfig) {
-    const commits = await this.gitAnalysis.getCommits(options.parent, timeConfig);
+    // For timeline view, convert single-day queries to week queries
+    const timelineTimeConfig = this.getTimelineTimeConfig(timeConfig);
+    
+    const commits = await this.gitAnalysis.getCommits(options.parent, timelineTimeConfig);
     // Default to numbers mode unless --symbols is specified
     const showNumbers = !options.symbols;
     const timeline = this.timeline.generate(commits, timeConfig, showNumbers);
@@ -208,6 +211,44 @@ class Yday {
       
       console.log(`| ${project} | ${commits}       | ${remote.padEnd(49)} |`);
     }
+  }
+
+  // Convert single-day queries to week queries for timeline view
+  getTimelineTimeConfig(timeConfig) {
+    // If this is a single-day query (startDate === endDate), expand to show the full week
+    if (timeConfig && timeConfig.type && timeConfig.type.startsWith('last-') && 
+        timeConfig.startDate && timeConfig.endDate && 
+        timeConfig.startDate.getTime() === timeConfig.endDate.getTime()) {
+      
+      // Calculate the Monday of the week containing the target date
+      const targetDate = new Date(timeConfig.startDate);
+      const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust for Sunday being 0
+      
+      const monday = new Date(targetDate);
+      monday.setDate(targetDate.getDate() - daysFromMonday);
+      monday.setHours(0, 0, 0, 0);
+      
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
+      
+      // Calculate days back from today to Monday
+      const today = new Date();
+      const daysDiff = Math.ceil((today - monday) / (24 * 60 * 60 * 1000));
+      
+      return {
+        type: 'timeline-week',
+        startDate: monday,
+        endDate: sunday,
+        days: daysDiff,
+        originalType: timeConfig.type,
+        originalDate: timeConfig.startDate
+      };
+    }
+    
+    // For non-single-day queries, return as-is
+    return timeConfig;
   }
 }
 

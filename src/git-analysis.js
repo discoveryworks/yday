@@ -49,7 +49,7 @@ class GitAnalysis {
       const standupArgs = this.buildStandupArgs(parentDir, timeConfig);
       const standupOutput = await this.runGitStandup(standupArgs);
       
-      return this.parseStandupOutput(standupOutput, parentDir);
+      return this.parseStandupOutput(standupOutput, parentDir, timeConfig);
     } finally {
       // Always restore original directory
       process.chdir(originalCwd);
@@ -57,6 +57,11 @@ class GitAnalysis {
   }
 
   buildStandupArgs(parentDir, timeConfig) {
+    // Handle null/undefined configs
+    if (!timeConfig || !timeConfig.type) {
+      return ['-d', '1']; // Default to yesterday
+    }
+    
     // If this is a git-standup style config, use the prebuilt args
     if (timeConfig.type === 'git-standup' && timeConfig.standupArgs) {
       return timeConfig.standupArgs;
@@ -64,9 +69,15 @@ class GitAnalysis {
     
     const args = [];
     
+    // Always use local date format for more precise parsing
+    args.push('-D', 'local');
+    
     if (timeConfig.type === 'today') {
       // Show only today
       args.push('-d', '0', '-u', '0');
+    } else if (timeConfig.type === 'timeline-week') {
+      // For timeline week view, show since Monday of that week
+      args.push('-d', timeConfig.days.toString());
     } else if (timeConfig.type === 'on-day' && timeConfig.singleDay) {
       // Show only that specific day
       args.push('-d', timeConfig.days.toString(), '-u', timeConfig.days.toString());
@@ -78,12 +89,12 @@ class GitAnalysis {
       args.push('-d', '1', '-u', '0');
     } else if (timeConfig.type && timeConfig.type.startsWith('last-') && timeConfig.startDate && timeConfig.endDate && timeConfig.startDate.getTime() === timeConfig.endDate.getTime()) {
       // Single day query (startDate === endDate) - show only that day
-      // Use -d X -u (X-1) to get commits from exactly X days ago
-      const until = Math.max(0, timeConfig.days - 1);
-      args.push('-d', timeConfig.days.toString(), '-u', until.toString());
+      // Use -d X to get commits since X days ago, then filter in parseStandupOutput
+      args.push('-d', timeConfig.days.toString());
     } else {
       // For multiple days, -d shows "since N days ago"
-      args.push('-d', timeConfig.days.toString());
+      const days = timeConfig.days || 1;
+      args.push('-d', days.toString());
     }
     
     return args;
@@ -141,7 +152,7 @@ class GitAnalysis {
     });
   }
 
-  parseStandupOutput(standupOutput, parentDir) {
+  parseStandupOutput(standupOutput, parentDir, timeConfig) {
     const repoCommits = new Map();
     let currentRepo = '';
     let currentCommits = [];
@@ -182,27 +193,32 @@ class GitAnalysis {
       
       // Check if this line contains commit info (starts with hash and has " - ")
       if (line.match(/^[a-f0-9]+.*\s-\s/)) {
-        // Extract commit message and timestamp
-        const commitMatch = line.match(/^[a-f0-9]+.*\s-\s(.+)\s\(([^)]*\sago)\)\s<[^>]*>.*$/);
+        // Extract commit message and timestamp - handle both relative and local date formats
+        let commitMatch = line.match(/^[a-f0-9]+.*\s-\s(.+)\s\(([^)]*\sago)\)\s<[^>]*>.*$/);
+        
+        // Try local date format if relative format doesn't match
+        if (!commitMatch) {
+          commitMatch = line.match(/^[a-f0-9]+.*\s-\s(.+)\s\(([^)]+)\)\s<[^>]*>.*$/);
+        }
         if (commitMatch) {
           let commitMessage = commitMatch[1].trim();
-          const timeAgo = commitMatch[2]; // e.g., "2 minutes ago", "3 hours ago", "1 day ago"
+          const timeString = commitMatch[2]; // Could be "2 minutes ago" or "Mon Jul 22 14:30:00 2025"
           
           if (commitMessage) {
-            // Parse the time ago string to get a date
-            const commitDate = this.parseTimeAgo(timeAgo);
+            // Parse the time string to get a date
+            const commitDate = this.parseTimeString(timeString);
             
             currentCommits.push({
               message: commitMessage,
               date: commitDate,
-              timeAgo: timeAgo
+              timeAgo: timeString
             });
           }
         }
       }
     }
     
-    // Don't forget the last repo
+    // Don't forget the last repo (only if it has commits)
     if (currentRepo && currentCommits.length > 0) {
       const repoName = path.basename(currentRepo);
       repoCommits.set(repoName, [...currentCommits]);
@@ -211,12 +227,35 @@ class GitAnalysis {
     // Convert to the format expected by semantic analysis
     const result = [];
     for (const [repoName, commits] of repoCommits) {
-      result.push({
-        name: repoName,
-        path: currentRepo, // This should be calculated properly, but for now...
-        commits: commits,
-        commitCount: commits.length
-      });
+      let filteredCommits = commits;
+      
+      // For single-day queries (but not timeline-week), filter commits to only include those from the target day
+      if (timeConfig && timeConfig.type && timeConfig.type.startsWith('last-') && 
+          timeConfig.startDate && timeConfig.endDate && 
+          timeConfig.startDate.getTime() === timeConfig.endDate.getTime()) {
+        
+        const targetDate = new Date(timeConfig.startDate);
+        targetDate.setHours(0, 0, 0, 0);
+        
+        filteredCommits = commits.filter(commit => {
+          if (commit.date) {
+            const commitDate = new Date(commit.date);
+            commitDate.setHours(0, 0, 0, 0);
+            return commitDate.getTime() === targetDate.getTime();
+          }
+          return false;
+        });
+      }
+      
+      // Only include repos that have commits (after filtering)
+      if (filteredCommits.length > 0) {
+        result.push({
+          name: repoName,
+          path: currentRepo, // This should be calculated properly, but for now...
+          commits: filteredCommits,
+          commitCount: filteredCommits.length
+        });
+      }
     }
     
     if (verbose) {
@@ -227,6 +266,24 @@ class GitAnalysis {
       parentDir,
       repos: result
     };
+  }
+
+  // Parse time strings from git-standup (both relative and local date formats)
+  parseTimeString(timeString) {
+    // First try to parse as relative time ("X days ago")
+    const relativeMatch = timeString.match(/^(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago$/);
+    if (relativeMatch) {
+      return this.parseTimeAgo(timeString);
+    }
+    
+    // Try to parse as local date format 
+    const localDate = new Date(timeString);
+    if (!isNaN(localDate.getTime())) {
+      return localDate;
+    }
+    
+    // Fallback to current time
+    return new Date();
   }
 
   // Parse "time ago" strings from git-standup into actual dates
