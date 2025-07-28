@@ -1,0 +1,75 @@
+/Users/developer/workspace/rails
+d1e2f3a - Prepare Rails 7.1.0 release candidate (2023-10-23) <David Heinemeier Hansson>
+b4c5e6f - Fix security vulnerability in ActiveRecord (2023-10-23) <Aaron Patterson>
+a1b2c3d - Add support for encrypted attributes in Active Record (2023-10-23) <David Heinemeier Hansson>
+e4f5a6b - Fix issue with has_many associations and counter caches (2023-10-23) <Aaron Patterson>
+c7d8e9f - Improve performance of ActiveSupport::Inflector.camelize (2023-10-23) <Xavier Noria>
+f1a2b3c - Update CHANGELOG for upcoming 7.1.0 release (2023-10-23) <Rafael Mendonça França>
+/Users/developer/workspace/hotwire-rails
+e1f2a3b - Integrate Turbo 8 with Rails view helpers (2023-10-23) <David Heinemeier Hansson>
+c4d5e6f - Add Stimulus controller generators (2023-10-23) <Alexandre Ruban>
+a7b8c9d - Fix Turbo Stream template rendering (2023-10-23) <Jorge Manrubia>
+/Users/developer/workspace/solid_cache
+e1f2a3b - Implement cache size limits and eviction policies (2023-10-23) <David Heinemeier Hansson>
+b4c5d6e - Add Redis-compatible interface for drop-in replacement (2023-10-23) <Donal McBreen>
+d7e8f9a - Optimize cache key storage and retrieval (2023-10-23) <Jean Boussier>
+c1d2e3f - Add comprehensive benchmarks vs Redis (2023-10-23) <Kasper Timm Hansen>
+a4b5c6d - Fix race conditions in concurrent cache operations (2023-10-23) <Andrew White>
+e7f8a9b - Add support for cache namespacing (2023-10-23) <Guillermo Iguaran>
+b1c2e3f - Implement cache statistics and monitoring (2023-10-23) <Ryuta Kamizono>
+/Users/developer/workspace/mission_control-jobs
+f4a5b6c - Add job retry configuration and exponential backoff (2023-10-23) <David Heinemeier Hansson>
+d7e8f9a - Implement job queue monitoring dashboard (2023-10-23) <Rosa Gutierrez>
+a1b2c3d - Add support for scheduled jobs and cron syntax (2023-10-23) <Adrianna Chang>
+e4f5a6b - Fix job serialization for complex argument types (2023-10-23) <Jonathan Hefner>
+/Users/developer/workspace/propshaft
+a1b2c3d - Optimize asset pipeline for production builds (2023-10-23) <David Heinemeier Hansson>
+e4f5a6b - Add support for source maps in development (2023-10-23) <Breno Gazzola>
+b7c8d9e - Fix asset precompilation with custom output paths (2023-10-23) <Alex Ghiculescu>
+f1a2b3c - Implement asset fingerprinting and cache busting (2023-10-23) <John Hawthorn>
+c4d5e6f - Add integration with importmap-rails (2023-10-23) <Kevin Newton>
+/Users/developer/workspace/importmap-rails
+a7b8c9d - Add support for HTTP/2 push with preload links (2023-10-23) <David Heinemeier Hansson>
+e1f2a3b - Fix importmap generation with nested modules (2023-10-23) <Javan Makhmali>
+c4d5e6f - Add support for dynamic imports and code splitting (2023-10-23) <Sam Stephenson>
+/Users/developer/workspace/stimulus-rails
+f7a8b9c - Update Stimulus to version 3.2 with new features (2023-10-23) <David Heinemeier Hansson>
+d1e2f3a - Add controller inheritance and mixins support (2023-10-23) <Alexandre Ruban>
+a4b5c6d - Fix controller registration with Turbo navigation (2023-10-23) <Jorge Manrubia>
+/Users/developer/workspace/turbo-rails
+e7f8a9b - Implement Turbo 8 morphing for seamless updates (2023-10-25) <David Heinemeier Hansson>
+c1d2e3f - Add support for custom Turbo Stream actions (2023-10-25) <Jorge Manrubia>
+a4b5c6d - Fix Turbo Frame lazy loading with intersection observer (2023-10-25) <Marten Schilstra>
+e7f8a9b - Optimize Turbo Drive caching and restoration (2023-10-25) <Sam Stephenson>
+b1c2d3e - Add Turbo Native bridge improvements (2023-10-25) <Joe Masilotti>
+f4a5b6c - Fix form submission with Turbo confirmation dialogs (2023-10-25) <Alexandre Ruban>
+c7d8e9f - Add comprehensive test suite for Turbo behaviors (2023-10-25) <Rosa Gutierrez>
+/Users/developer/workspace/cssbundling-rails
+a1b2c3d - Add support for Tailwind CSS 3.3 features (2023-10-23) <David Heinemeier Hansson>
+e4f5a6b - Fix asset watching in development with Docker (2023-10-23) <Breno Gazzola>
+c7d8e9f - Add Bootstrap 5.3 integration and utilities (2023-10-23) <Alex Ghiculescu>
+/Users/developer/workspace/jsbundling-rails
+f1a2b3c - Update esbuild to latest version with performance improvements (2023-10-23) <David Heinemeier Hansson>
+d4e5f6a - Add support for Bun as JavaScript runtime (2023-10-23) <Kevin Newton>
+a7b8c9d - Fix webpack configuration for Rails 7.1 compatibility (2023-10-23) <Javan Makhmali>
+/Users/developer/workspace/actiontext
+e1f2a3b - Add support for custom attachment rendering (2023-10-26) <David Heinemeier Hansson>
+c4d5e6f - Fix rich text content sanitization and security (2023-10-26) <Sean Doyle>
+a7b8c9d - Improve Trix editor integration and customization (2023-10-26) <George Claghorn>
+e1f2a3b - Add ActionText content indexing for search (2023-10-26) <Gannon McGibbon>
+/Users/developer/workspace/activestorage
+b4c5d6e - Add support for Google Cloud Storage with signed URLs (2023-10-26) <David Heinemeier Hansson>
+f7a8b9c - Fix variant processing with image optimization (2023-10-26) <George Claghorn>
+c1d2e3f - Add support for direct uploads to S3 with CORS (2023-10-26) <Rosa Gutierrez>
+a4b5c6d - Implement background job processing for variants (2023-10-26) <Jonathan Hefner>
+e7f8a9b - Add ActiveStorage analytics and usage tracking (2023-10-26) <Eileen M. Uchitelle>
+/Users/developer/workspace/actionmailbox
+c1d2e3f - Improve email parsing and content extraction (2023-10-27) <David Heinemeier Hansson>
+f4a5b6c - Add support for DKIM signature verification (2023-10-27) <George Claghorn>
+d7e8f9a - Fix ActionMailbox routing with multiple inbound emails (2023-10-27) <Prathamesh Sonpatki>
+/Users/developer/workspace/activejob
+a1b2c3d - Add job prioritization and queue management (2023-10-27) <David Heinemeier Hansson>
+e4f5a6b - Implement job batching for bulk operations (2023-10-27) <Rosa Gutierrez>
+c7d8e9f - Add support for job progress tracking (2023-10-27) <Adrianna Chang>
+a1b2c3d - Fix ActiveJob serialization with custom objects (2023-10-27) <Jonathan Hefner>
+e4f5a6b - Add comprehensive job testing utilities (2023-10-27) <Gannon McGibbon>
