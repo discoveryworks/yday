@@ -85,8 +85,9 @@ Examples:
     $ yday -A "Jul 1 2025"
     $ yday -B "2025/07/31"
 
-  Visual timeline (basic patterns):
+  Visual timeline (numbers by default):
     $ yday --alastair
+    $ yday --alastair --symbols  # Use x/· symbols instead
 
   Find untracked work (NOT YET IMPLEMENTED):
     $ yday --shadow
@@ -153,7 +154,8 @@ For more information: https://github.com/discoveryworks/yday
   )
   .option("-v, --verbose", "enable verbose output for debugging")
   .option("--details", "show detailed legend and explanations")
-  .option("--numbers", "show commit counts instead of symbols in timeline")
+  .option("--numbers", "show commit counts in timeline (default)")
+  .option("--symbols", "show symbols (x/·) instead of numbers in timeline")
   .action(async (options, command) => {
     try {
       // Check if help was requested - Commander.js handles help automatically

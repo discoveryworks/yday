@@ -72,9 +72,11 @@ class Yday {
 
   async showTimeline(options, timeConfig) {
     const commits = await this.gitAnalysis.getCommits(options.parent, timeConfig);
-    const timeline = this.timeline.generate(commits, timeConfig, options.numbers);
+    // Default to numbers mode unless --symbols is specified
+    const showNumbers = !options.symbols;
+    const timeline = this.timeline.generate(commits, timeConfig, showNumbers);
     
-    this.renderTimelineTable(timeline, timeConfig, options.details, options.numbers);
+    this.renderTimelineTable(timeline, timeConfig, options.details, showNumbers);
   }
 
   async showSemantic(options, timeConfig) {
