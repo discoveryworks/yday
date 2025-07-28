@@ -74,7 +74,7 @@ class Yday {
     const commits = await this.gitAnalysis.getCommits(options.parent, timeConfig);
     const timeline = this.timeline.generate(commits, timeConfig);
     
-    this.renderTimelineTable(timeline, timeConfig);
+    this.renderTimelineTable(timeline, timeConfig, options.details);
   }
 
   async showSemantic(options, timeConfig) {
@@ -119,7 +119,7 @@ class Yday {
     }
   }
 
-  renderTimelineTable(timeline, timeConfig) {
+  renderTimelineTable(timeline, timeConfig, showDetails = false) {
     // Calculate the Monday of the current week
     const now = new Date();
     const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -156,12 +156,14 @@ class Yday {
       console.log(`| ${pattern} | ${project} | ${commits} |`);
     }
     
-    // Add legend
-    console.log('\nLegend:');
-    console.log('  x = High activity day (3+ commits)');
-    console.log('  / = Some activity day (1-2 commits)');
-    console.log('  · = No activity');
-    console.log('  M T W R F S s = Mon Tue Wed Thu Fri Sat Sun');
+    // Add legend only if details flag is set
+    if (showDetails) {
+      console.log('\nLegend:');
+      console.log('  x = High activity day (3+ commits)');
+      console.log('  / = Some activity day (1-2 commits)');
+      console.log('  · = No activity');
+      console.log('  M T W R F S s = Mon Tue Wed Thu Fri Sat Sun');
+    }
   }
 
   renderShadowTable(analysis) {

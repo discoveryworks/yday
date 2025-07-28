@@ -57,9 +57,7 @@ function checkDependencies() {
 
 program
   .name("yday")
-  .description(
-    "Git retrospective analysis tool - smart views of recent development work",
-  )
+  .description("Digest view of recent git commits")
   .version("0.1.0")
   .usage("[options]")
   .addHelpText("before", "\n📜 yday - What have I been working on?\n")
@@ -113,13 +111,22 @@ For more information: https://github.com/discoveryworks/yday
   )
   .option("-d, --days <number>", "since N days ago (git-standup -d)", parseInt)
   .option("-u, --until <number>", "until N days ago (git-standup -u)", parseInt)
-  .option("-A, --after <date>", "after date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')", String)
-  .option("-B, --before <date>", "before date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')", String)
+  .option(
+    "-A, --after <date>",
+    "after date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')",
+    String,
+  )
+  .option(
+    "-B, --before <date>",
+    "before date (formats: YYYY-MM-DD, YYYY/MM/DD, 'Mon DD YYYY')",
+    String,
+  )
   .option(
     "--on <number>",
     "commits from exactly N days ago (single day)",
     parseInt,
   )
+  .option("--projects", "list all git projects found in parent directory")
   .option("--last-workday", "show last business day (skips weekends)")
   .option("--last-monday", "show last Monday's commits")
   .option("--last-tuesday", "show last Tuesday's commits")
@@ -128,7 +135,6 @@ For more information: https://github.com/discoveryworks/yday
   .option("--last-friday", "show last Friday's commits")
   .option("--last-saturday", "show last Saturday's commits")
   .option("--last-sunday", "show last Sunday's commits")
-  .option("--projects", "list all git projects found in parent directory")
   .option(
     "--shadow",
     "[NOT YET IMPLEMENTED] - find repos with commits but no GitHub project tracking",
@@ -146,14 +152,15 @@ For more information: https://github.com/discoveryworks/yday
     parseInt,
   )
   .option("-v, --verbose", "enable verbose output for debugging")
+  .option("--details", "show detailed legend and explanations")
   .action(async (options, command) => {
     try {
       // Check if help was requested - Commander.js handles help automatically
       // but we need to prevent our action from running
-      if (process.argv.includes('--help') || process.argv.includes('-h')) {
+      if (process.argv.includes("--help") || process.argv.includes("-h")) {
         return;
       }
-      
+
       // Check dependencies before running
       checkDependencies();
 
