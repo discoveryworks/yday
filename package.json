@@ -1,6 +1,6 @@
 {
   "name": "yday",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Git retrospective analysis tool - smart views of recent development work",
   "main": "src/index.js",
   "bin": {
@@ -16,7 +16,7 @@
     "test:bdd:pretty": "cucumber-js --format @cucumber/pretty-formatter",
     "test:all": "npm test && npm run test:bdd",
     "version:patch": "npm version patch",
-    "version:minor": "npm version minor", 
+    "version:minor": "npm version minor",
     "version:major": "npm version major",
     "version:check": "npm test -- tests/unit/version-consistency.test.js"
   },
