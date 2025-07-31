@@ -123,13 +123,35 @@ class Timeline {
     };
   }
   
-  // Helper to parse commit date from current time (for commit date fallback)
+  // Helper to parse commit date from "time ago" strings (for commit date fallback)
   parseCommitDate(timeAgo) {
     const now = new Date();
     
-    // This is a simplified version - we assume commits were made "now" if we can't parse author date
-    // In a real implementation, we'd need to get actual commit timestamps from git
-    return now;
+    // Parse patterns like "26 minutes ago", "22 hours ago", "2 days ago"
+    const match = timeAgo.match(/^(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago$/);
+    if (!match) {
+      return now; // Fallback to now if we can't parse
+    }
+    
+    const value = parseInt(match[1]);
+    const unit = match[2];
+    
+    switch (unit) {
+      case 'minute':
+        return new Date(now.getTime() - value * 60 * 1000);
+      case 'hour':
+        return new Date(now.getTime() - value * 60 * 60 * 1000);
+      case 'day':
+        return new Date(now.getTime() - value * 24 * 60 * 60 * 1000);
+      case 'week':
+        return new Date(now.getTime() - value * 7 * 24 * 60 * 60 * 1000);
+      case 'month':
+        return new Date(now.getTime() - value * 30 * 24 * 60 * 60 * 1000);
+      case 'year':
+        return new Date(now.getTime() - value * 365 * 24 * 60 * 60 * 1000);
+      default:
+        return now;
+    }
   }
 }
 

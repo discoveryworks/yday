@@ -4,6 +4,7 @@ const { program } = require("commander");
 const chalk = require("chalk");
 const { execSync } = require("child_process");
 const yday = require("../src/index");
+const { version } = require("../package.json");
 
 // Check for required dependencies
 function checkDependencies() {
@@ -58,7 +59,7 @@ function checkDependencies() {
 program
   .name("yday")
   .description("Digest view of recent git commits")
-  .version("0.1.0")
+  .version(version)
   .usage("[options]")
   .addHelpText("before", "\n📜 yday - What have I been working on?\n")
   .addHelpText(
