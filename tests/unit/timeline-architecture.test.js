@@ -135,7 +135,7 @@ describe('Timeline Architecture - Step 3: Timeline Display', () => {
         repo: 'repo1', 
         commitCount: 3,
         commits: [
-          { authorDate: new Date('2025-08-01T10:00:00.000Z') }, // Friday - 1 commit
+          { authorDate: new Date('2025-08-08T10:00:00.000Z') }, // Friday of current week - 1 commit
           { authorDate: new Date('2025-08-04T10:00:00.000Z') }, // Monday - 2 commits  
           { authorDate: new Date('2025-08-04T15:00:00.000Z') }
         ]
@@ -197,8 +197,10 @@ describe('Timeline Architecture - Step 4: Math Verification', () => {
 
 const TimespanAnalyzer = require('../../src/timespan');
 const CommitAnalyzer = require('../../src/commit-analyzer');
+const TimelineDisplay = require('../../src/timeline-display');
+const TimelineValidator = require('../../src/timeline-validator');
 
-// Mock functions that we'll implement  
+// Clean architecture functions
 function determineTimespan(options, currentDate = new Date()) {
   const analyzer = new TimespanAnalyzer();
   return analyzer.determineTimespan(options, currentDate);
@@ -210,9 +212,11 @@ function analyzeCommits(timespan, gitStandupOutput) {
 }
 
 function generateTimeline(commits, timespan) {
-  throw new Error('generateTimeline not implemented yet');
+  const display = new TimelineDisplay();
+  return display.generateTimeline(commits, timespan);
 }
 
 function validateTimeline(timeline) {
-  throw new Error('validateTimeline not implemented yet');
+  const validator = new TimelineValidator();
+  return validator.validateTimeline(timeline);
 }
