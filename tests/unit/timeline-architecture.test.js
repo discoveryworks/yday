@@ -67,11 +67,11 @@ describe('Timeline Architecture - Step 2: Git Analysis', () => {
     
     const mockGitStandupOutput = `
 /Users/test/repo1
-abc123 - Fixed bug (26 hours ago) <User> 
-def456 - Added feature (25 hours ago) <User>
+abc123 - Fixed bug (7 days ago) <User> 
+def456 - Added feature (7 days ago) <User>
 
 /Users/test/repo2  
-ghi789 - Updated docs (27 hours ago) <User>
+abc789 - Updated docs (7 days ago) <User>
 `;
     
     const commits = analyzeCommits(timespan, mockGitStandupOutput);
@@ -80,15 +80,15 @@ ghi789 - Updated docs (27 hours ago) <User>
       {
         repo: 'repo1',
         commits: [
-          { hash: 'abc123', message: 'Fixed bug', timeAgo: '26 hours ago', authorDate: expect.any(Date) },
-          { hash: 'def456', message: 'Added feature', timeAgo: '25 hours ago', authorDate: expect.any(Date) }
+          { hash: 'abc123', message: 'Fixed bug', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) },
+          { hash: 'def456', message: 'Added feature', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) }
         ],
         commitCount: 2
       },
       {
         repo: 'repo2', 
         commits: [
-          { hash: 'ghi789', message: 'Updated docs', timeAgo: '27 hours ago', authorDate: expect.any(Date) }
+          { hash: 'abc789', message: 'Updated docs', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) }
         ],
         commitCount: 1
       }
@@ -196,6 +196,7 @@ describe('Timeline Architecture - Step 4: Math Verification', () => {
 });
 
 const TimespanAnalyzer = require('../../src/timespan');
+const CommitAnalyzer = require('../../src/commit-analyzer');
 
 // Mock functions that we'll implement  
 function determineTimespan(options, currentDate = new Date()) {
@@ -204,7 +205,8 @@ function determineTimespan(options, currentDate = new Date()) {
 }
 
 function analyzeCommits(timespan, gitStandupOutput) {
-  throw new Error('analyzeCommits not implemented yet');  
+  const analyzer = new CommitAnalyzer();
+  return analyzer.analyzeCommits(timespan, gitStandupOutput);
 }
 
 function generateTimeline(commits, timespan) {
