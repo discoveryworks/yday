@@ -47,7 +47,7 @@ describe('Timeline Architecture - Step 1: Timespan Determination', () => {
     
     expect(timespan).toEqual({
       type: 'multi-day',
-      startDate: new Date('2025-08-01T00:00:00.000Z'), // 3 days ago  
+      startDate: new Date('2025-08-02T00:00:00.000Z'), // 3 days: Aug 2, 3, 4
       endDate: new Date('2025-08-04T23:59:59.999Z'), // Today
       days: 3,
       description: 'last 3 days'
@@ -195,9 +195,12 @@ describe('Timeline Architecture - Step 4: Math Verification', () => {
   });
 });
 
-// Mock functions that we'll implement
+const TimespanAnalyzer = require('../../src/timespan');
+
+// Mock functions that we'll implement  
 function determineTimespan(options, currentDate = new Date()) {
-  throw new Error('determineTimespan not implemented yet');
+  const analyzer = new TimespanAnalyzer();
+  return analyzer.determineTimespan(options, currentDate);
 }
 
 function analyzeCommits(timespan, gitStandupOutput) {
