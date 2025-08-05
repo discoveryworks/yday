@@ -65,12 +65,13 @@ class TimePeriods {
       };
     } else {
       // Show recent work (today + yesterday to catch commits from last 24 hours)
+      const yesterdayDate = new Date(today.getTime() - 24 * 60 * 60 * 1000);
       return {
         type: 'smart-yesterday',
-        startDate: new Date(today.getTime() - 24 * 60 * 60 * 1000),
+        startDate: yesterdayDate,
         endDate: today,
         days: 1,
-        description: 'recent work'
+        description: `yesterday, ${this.formatDate(yesterdayDate)}`
       };
     }
   }
@@ -142,7 +143,7 @@ class TimePeriods {
         if (today.getDay() === 1) { // Monday
           return `since Friday, ${this.formatDate(timeConfig.startDate)}`;
         }
-        return `recent work`;
+        return `yesterday, ${this.formatDate(timeConfig.startDate)}`;
       
       case 'last-workday':
         return `last workday, ${this.formatDate(timeConfig.startDate)}`;
