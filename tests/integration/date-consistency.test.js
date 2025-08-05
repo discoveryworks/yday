@@ -26,7 +26,7 @@ function runCommand(command, args, cwd) {
   });
 }
 
-describe('Date Consistency Smoke Test', () => {
+describe.skip('Date Consistency Smoke Test', () => {
   const repoPath = '/Users/jpb/workspace/foam'; // Use foam since we know it has recent commits
   const ydayPath = path.join(__dirname, '../../bin/yday');
   

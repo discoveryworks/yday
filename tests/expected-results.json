@@ -4,30 +4,22 @@
       "description": "User runs: yday --last-tuesday",
       "expectedRepos": [
         {
-          "name": "dot-rot",
+          "name": "rails",
+          "commits": 2,
+          "summary": "Working on Rails & security"
+        },
+        {
+          "name": "my-app", 
           "commits": 1,
-          "summary": "Working on config"
-        },
-        {
-          "name": "tunnelvision-app", 
-          "commits": 9,
-          "summary": "Working on model & api"
-        },
-        {
-          "name": "eisenvector7-ror",
-          "commits": 4,
-          "summary": "Working on model & ui"
+          "summary": "Working on authentication"
         }
       ]
     },
     "timeline": {
       "description": "User runs: yday --last-tuesday --alastair",
       "expectedPatterns": {
-        "gday-cli": "11·····",
-        "dot-rot": "·1·····", 
-        "tunnelvision-app": "·9·····",
-        "foam": "··1····",
-        "eisenvector7-ror": "·4·····"
+        "rails": "·2·····",
+        "my-app": "·1·····"
       },
       "expectedWeekStart": "Monday, July 21, 2025",
       "note": "Shows full week but Tuesday (position 1) should match semantic counts"
@@ -46,9 +38,8 @@
     "rule": "Timeline Tuesday counts must equal semantic Tuesday totals",
     "tuesday_position": 1,
     "expected_matches": [
-      {"repo": "dot-rot", "semantic": 1, "timeline_pos_1": 1},
-      {"repo": "tunnelvision-app", "semantic": 9, "timeline_pos_1": 9},
-      {"repo": "eisenvector7-ror", "semantic": 4, "timeline_pos_1": 4}
+      {"repo": "rails", "semantic": 2, "timeline_pos_1": 2},
+      {"repo": "my-app", "semantic": 1, "timeline_pos_1": 1}
     ]
   }
 }

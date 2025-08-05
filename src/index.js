@@ -128,16 +128,9 @@ class Yday {
     // Calculate the Monday of the week we're analyzing
     let referenceDate;
     
-    // Use the timeConfig to determine which week to show
-    if (timeConfig.startDate) {
-      referenceDate = new Date(timeConfig.startDate);
-    } else if (timeConfig.type && timeConfig.type.startsWith('last-')) {
-      // For last-day queries, use that specific date
-      referenceDate = new Date(timeConfig.startDate);
-    } else {
-      // Default to current week
-      referenceDate = new Date();
-    }
+    // For Alastair timeline, always use current week to match timeline generation
+    // This ensures header and timeline show the same week
+    referenceDate = new Date();
     
     const dayOfWeek = referenceDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust for Sunday being 0

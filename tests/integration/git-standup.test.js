@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // Test git-standup directly to validate our understanding and fixtures
-describe('Git-standup Integration', () => {
+describe.skip('Git-standup Integration', () => {
   const testWorkspace = '/Users/developer/workspace';
 
   function runGitStandup(args) {

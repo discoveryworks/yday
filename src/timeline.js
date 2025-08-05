@@ -23,16 +23,11 @@ class Timeline {
 
   generateRealPattern(repo, timeConfig, showNumbers = false) {
     // Determine which week to analyze
-    let referenceDate;
+    // For Alastair timeline, always use current week to show recent activity
+    let referenceDate = new Date(); // Always use current date for week calculation
     
-    if (timeConfig && timeConfig.startDate) {
-      referenceDate = new Date(timeConfig.startDate);
-    } else if (timeConfig && timeConfig.type && timeConfig.type.startsWith('last-')) {
-      referenceDate = new Date(timeConfig.startDate);
-    } else {
-      // Default to current week
-      referenceDate = new Date();
-    }
+    // Note: We used to use timeConfig.startDate, but this caused issues where
+    // commits would fall outside the calculated week boundaries
     
     const dayOfWeek = referenceDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;

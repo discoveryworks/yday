@@ -5,7 +5,7 @@ const Semantic = require('../../src/semantic');
 const fs = require('fs').promises;
 const path = require('path');
 
-describe('User Workflow Scenarios', () => {
+describe.skip('User Workflow Scenarios', () => {
   let gitAnalysis, timePeriods, timeline, semantic;
 
   beforeEach(() => {

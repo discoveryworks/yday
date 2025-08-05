@@ -1,0 +1,6 @@
+/Users/developer/workspace/rails
+d1e2f3a - Prepare Rails 7.1.0 release candidate (2 days ago) <David Heinemeier Hansson>
+b4c5e6f - Fix security vulnerability in ActiveRecord (2 days ago) <Aaron Patterson>
+
+/Users/developer/workspace/my-app
+abc123d - Fixed authentication bug (1 day ago) <Developer>
