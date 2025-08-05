@@ -19,20 +19,10 @@ Anyone who works in multiple repos and juggles multiple projects.
 
 `yday` analyzes git commits across your workspace and provides semantic summaries of recent development work. It:
 
-- finds commits across multiple repos (e.g. everything in a `~/workspace` folder)
-- groups commits into meaningful chunks of work (and creates terse, semantic descriptions)
-- helps find commits representing unplanned work, and retroactively adding that to your backlog
-
-**Multiple Views:**
-- `--alastair`: Visual timeline view of commits across time
-- `--shadow`: Identifies repos with commits but no project tracking
-- `--today`, `--days N`: Flexible time periods
-
-**Smart Behavior:**
-- Monday morning shows Friday's work (not Sunday's nothing)
-- Filters out merge commits and noise
-- Focuses on semantic meaning of changes
-- Works across standard git repos and worktrees
+1. gathers commits across multiple repos (e.g. everything in a `~/workspace` folder)
+2. summarizes meaningful chunks of work across commits
+3. retroactively adds unplanned work to your backlog based on commits without tickets ("shadow work")
+4. offers multiple contextual views of your work (e.g. Alaistair timeline, Monday morning shows Friday's work (not Sunday's nothing)
 
 
 📜📜📜📜 How do I use it?
@@ -40,14 +30,30 @@ Anyone who works in multiple repos and juggles multiple projects.
 
 ## Installation
 
-You can install `yday` using one of the options listed below
+### npm (Recommended)
+```shell
+npm install -g yday
+```
 
-| Source | Command                                                                                        |
-|--------|------------------------------------------------------------------------------------------------|
-| curl   | `curl -L https://raw.githubusercontent.com/discoveryworks/yday/master/installer.sh \| sudo sh` |
-| npm    | `npm install -g yday`                                                                          |
-| brew   | `brew update && brew install yday`                                                             |
-| manual | Clone and run `make install`                                                                   |
+### Manual Installation
+```shell
+# Clone the repository
+git clone https://github.com/discoveryworks/yday.git
+cd yday
+
+# Install dependencies
+npm install
+
+# Link globally for development
+npm link
+
+# Or run directly
+node bin/yday --help
+```
+
+### Other Package Managers
+- **Homebrew**: Not yet available (planned for future release)
+- **curl installer**: Not yet available (planned for future release)
 
 
 ## Basic Usage
@@ -97,17 +103,30 @@ yday --alastair
 
     | MTWRFSs | Project     | Commits |
     | ------- | ----------- |---------|
-    | //····· | my-app      | 3       |
-    | //x···· | my-app-ios  | 2       |
-    | /·o·/x· | api-service | 1       |
-    | ·/·/x·· | docs-site   | 2       |
+    | ··3···· | my-app      | 3       |
+    | ··2···· | my-app-ios  | 2       |
+    | ···1··· | api-service | 1       |
+    | ·1·2··· | docs-site   | 2       |
 
-
-### Find untracked work
 ```shell
-yday --shadow
+# Use symbols instead of numbers
+yday --alastair --symbols
 ```
 
+    | MTWRFSs | Project     | Commits |
+    | ------- | ----------- |---------|
+    | ··x···· | my-app      | 3       |
+    | ··/···· | my-app-ios  | 2       |
+    | ···/··· | api-service | 1       |
+    | ·/·/··· | docs-site   | 2       |
+
+
+### Find untracked work (NOT YET IMPLEMENTED)
+```shell
+yday --shadow  # Coming in future release
+```
+
+*Planned output:*
     | Project     | Commits | Remote Repository                                 |
     |-------------|---------|---------------------------------------------------|
     | my-app      | 3       | https://github.com/discoveryworks/my-app.git      |
@@ -157,9 +176,67 @@ yday --shadow --org mycompany --project 2
 📜📜📜📜📜 Extras
 =============================
 
+## Development & Testing
+
+```bash
+# Unit tests (Jest)
+npm test
+
+# BDD/Integration tests (Cucumber)
+npm run test:bdd
+
+# All tests
+npm run test:all
+
+# Specific test files
+npm test -- tests/unit/timeline-date-parsing.test.js
+npm run test:bdd -- features/user_workflows.feature
+```
+
+## Release Process
+
+### npm Publishing
+```bash
+# Ensure all tests pass
+npm run test:all
+
+# Version bump (creates git tag automatically)
+npm run version:patch  # or version:minor, version:major
+
+# Publish to npm registry
+npm publish
+
+# Push git changes and tags
+git push && git push --tags
+```
+
+### Future Release Targets
+
+**Homebrew Formula** (planned):
+- Create homebrew formula in homebrew-core
+- Formula will download tarball from GitHub releases
+- Requires: stable release, testing on multiple macOS versions
+
+**curl Installer** (planned):
+- Shell script for direct installation
+- Downloads latest release from GitHub
+- Handles dependency checking (git-standup)
+
+**GitHub Releases** (planned):
+- Automated release creation from git tags
+- Include pre-built binaries for different platforms
+- Release notes generated from CHANGELOG.md
+
 ## Configuration
 
-Set parent folders, GH tokens, and more in `~/.config/yday.yml`
+**Current**: Configuration via command-line flags only:
+```bash
+yday --parent ~/code        # Custom workspace directory
+yday --org mycompany        # GitHub organization (for future --shadow mode)
+yday --project 2            # GitHub project number (for future --shadow mode)
+```
+
+**Planned**: Configuration file support at `~/.config/yday.yml` (not yet implemented)
 
 ## Why "yday"?
 

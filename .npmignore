@@ -1,0 +1,51 @@
+# Development and testing files
+tests/
+features/
+cucumber.js
+scripts/
+docs/
+
+# IDE and editor configurations
+.cursor/
+.claude/
+
+# CI/CD files
+.github/
+
+# Development dependencies and configs
+*.test.js
+jest.config.js
+.babelrc
+.eslintrc*
+.prettierrc*
+
+# Logs and temporary files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node modules (already ignored by default)
+node_modules/
+
+# Git
+.git/
+.gitignore

@@ -26,9 +26,21 @@
     "commit",
     "analysis",
     "standup",
-    "workflow"
+    "workflow",
+    "cli",
+    "productivity",
+    "development",
+    "timeline"
   ],
   "author": "Developer",
+  "preferGlobal": true,
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "CHANGELOG.md",
+    "CLAUDE.md"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=16.0.0"
