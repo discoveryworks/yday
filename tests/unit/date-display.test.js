@@ -82,7 +82,7 @@ describe('Date Display Requirements', () => {
         console.log('Timeline output:', stdout);
         
         // Should show specific week dates
-        expect(stdout).toMatch(/week beginning (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}/);
+        expect(stdout).toMatch(/Week beginning (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}/);
         
         resolve();
       });

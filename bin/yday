@@ -142,6 +142,7 @@ For more information: https://github.com/discoveryworks/yday
     "[NOT YET IMPLEMENTED] - find repos with commits but no GitHub project tracking",
   )
   .option("-t, --today", "show today's commits")
+  .option("--prev", "show previous week (for timeline view)")
   .option(
     "--parent <path>",
     "parent directory to scan for git repos",

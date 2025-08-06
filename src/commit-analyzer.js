@@ -5,10 +5,12 @@
  * Analyzes git-standup output and filters commits to exact timespan.
  */
 
+const { spawn } = require('child_process');
+
 class CommitAnalyzer {
   
   /**
-   * Analyze commits for the exact timespan
+   * Analyze commits for the exact timespan (test version - takes git-standup output)
    * @param {Object} timespan - Timespan object from Step 1
    * @param {string} gitStandupOutput - Raw output from git-standup
    * @returns {Array} Array of repo objects with filtered commits
@@ -30,6 +32,78 @@ class CommitAnalyzer {
     }).filter(repo => repo.commitCount > 0); // Only include repos with commits
     
     return filteredRepos;
+  }
+  
+  /**
+   * Analyze commits for the exact timespan (production version - runs git-standup)
+   * @param {string} parentDir - Parent directory to scan for repos
+   * @param {Object} timespan - Timespan object from Step 1
+   * @returns {Array} Array of repo objects with filtered commits
+   */
+  async analyzeCommitsFromGit(parentDir, timespan) {
+    // Run git-standup to get commit data
+    const gitStandupOutput = await this.runGitStandup(parentDir, timespan);
+    
+    // Use the test version to parse the output
+    return this.analyzeCommits(timespan, gitStandupOutput);
+  }
+  
+  /**
+   * Run git-standup command to get commit data
+   * @param {string} parentDir - Parent directory to scan for repos
+   * @param {Object} timespan - Timespan object from Step 1  
+   * @returns {string} git-standup output
+   */
+  async runGitStandup(parentDir, timespan) {
+    const args = this.buildStandupArgs(timespan);
+    
+    return new Promise((resolve, reject) => {
+      const child = spawn('git-standup', args, {
+        cwd: parentDir,
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+      
+      let stdout = '';
+      let stderr = '';
+      
+      child.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+      
+      child.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+      
+      child.on('close', (code) => {
+        if (code !== 0) {
+          reject(new Error(`git-standup failed with code ${code}: ${stderr}`));
+          return;
+        }
+        resolve(stdout);
+      });
+      
+      child.on('error', (error) => {
+        reject(new Error(`Failed to spawn git-standup: ${error.message}`));
+      });
+    });
+  }
+  
+  /**
+   * Build git-standup arguments from timespan
+   * @param {Object} timespan - Timespan object
+   * @returns {Array} git-standup arguments
+   */
+  buildStandupArgs(timespan) {
+    // Use git-standup's -A (after) and -B (before) flags for precise date ranges
+    // instead of -d (days back) which can include unwanted commits
+    
+    // Format dates as YYYY-MM-DD for git-standup
+    const startDateStr = timespan.startDate.toISOString().substring(0, 10);
+    const endDateStr = timespan.endDate.toISOString().substring(0, 10);
+    
+    
+    // Use precise date range and ISO format for exact timestamps
+    return ['-A', startDateStr, '-B', endDateStr, '-D', 'iso'];
   }
   
   /**
@@ -105,29 +179,42 @@ class CommitAnalyzer {
    * Check if a line is a commit line (has hash and message)
    */
   isCommitLine(line) {
-    // Commit lines typically have format: "abc123 - Message (time ago) <Author>"
-    return /^[a-f0-9]+\s+-\s+.+\s+\(.+ago\)\s+<.+>/.test(line);
+    // Commit lines can have two formats:
+    // Old format: "abc123 - Message (time ago) <Author>"
+    // New ISO format: "abc123 - Message (2025-08-05 13:25:28 -0400) <Author>"
+    return /^[a-f0-9]+\s+-\s+.+\s+\(.+\)\s+<.+>/.test(line);
   }
   
   /**
    * Parse a commit line into structured data
    */
   parseCommitLine(line) {
-    // Pattern: "abc123 - Message (26 hours ago) <Author>" with optional trailing content
-    const match = line.match(/^([a-f0-9]+)\s+-\s+(.+?)\s+\((.+?ago)\)\s+<(.+?)>/);
+    // Two patterns to support:
+    // Old: "abc123 - Message (26 hours ago) <Author>"
+    // New: "abc123 - Message (2025-08-05 13:25:28 -0400) <Author>"
+    const match = line.match(/^([a-f0-9]+)\s+-\s+(.+?)\s+\((.+?)\)\s+<(.+?)>/);
     
     if (!match) {
       return null;
     }
     
-    const [, hash, message, timeAgo, author] = match;
+    const [, hash, message, dateInfo, author] = match;
+    
+    let authorDate;
+    if (dateInfo.includes('ago')) {
+      // Old relative format
+      authorDate = this.parseTimeAgo(dateInfo.trim());
+    } else {
+      // New ISO format: "2025-08-05 13:25:28 -0400"
+      authorDate = new Date(dateInfo.trim());
+    }
     
     return {
       hash,
       message: message.trim(),
-      timeAgo: timeAgo.trim(),
+      timeAgo: dateInfo.trim(),
       author: author.trim(),
-      authorDate: this.parseTimeAgo(timeAgo.trim())
+      authorDate
     };
   }
   

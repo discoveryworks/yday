@@ -35,7 +35,7 @@ describe('Timeline Architecture - Step 1: Timespan Determination', () => {
       type: 'smart-yesterday', 
       startDate: new Date('2025-08-01T00:00:00.000Z'), // Friday
       endDate: new Date('2025-08-01T23:59:59.999Z'),
-      description: 'Friday, August 1'
+      description: 'yesterday, Friday, August 1'
     });
   });
 
@@ -65,13 +65,14 @@ describe('Timeline Architecture - Step 2: Git Analysis', () => {
       description: 'Tuesday, July 29'
     };
     
+    // Use ISO format dates that match the timespan (July 29)
     const mockGitStandupOutput = `
 /Users/test/repo1
-abc123 - Fixed bug (7 days ago) <User> 
-def456 - Added feature (7 days ago) <User>
+abc123 - Fixed bug (2025-07-29 10:00:00 -0400) <User> 
+def456 - Added feature (2025-07-29 14:30:00 -0400) <User>
 
 /Users/test/repo2  
-abc789 - Updated docs (7 days ago) <User>
+abc789 - Updated docs (2025-07-29 16:15:00 -0400) <User>
 `;
     
     const commits = analyzeCommits(timespan, mockGitStandupOutput);
@@ -80,15 +81,15 @@ abc789 - Updated docs (7 days ago) <User>
       {
         repo: 'repo1',
         commits: [
-          { hash: 'abc123', message: 'Fixed bug', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) },
-          { hash: 'def456', message: 'Added feature', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) }
+          { hash: 'abc123', message: 'Fixed bug', timeAgo: '2025-07-29 10:00:00 -0400', author: 'User', authorDate: expect.any(Date) },
+          { hash: 'def456', message: 'Added feature', timeAgo: '2025-07-29 14:30:00 -0400', author: 'User', authorDate: expect.any(Date) }
         ],
         commitCount: 2
       },
       {
         repo: 'repo2', 
         commits: [
-          { hash: 'abc789', message: 'Updated docs', timeAgo: '7 days ago', author: 'User', authorDate: expect.any(Date) }
+          { hash: 'abc789', message: 'Updated docs', timeAgo: '2025-07-29 16:15:00 -0400', author: 'User', authorDate: expect.any(Date) }
         ],
         commitCount: 1
       }
@@ -190,7 +191,7 @@ describe('Timeline Architecture - Step 4: Math Verification', () => {
     const validation = validateTimeline(timeline);
     expect(validation.isValid).toBe(false);
     expect(validation.errors).toContain(
-      'repo1: Pattern shows 5 commits but total is 14'
+      'repo1: Pattern shows exactly 5 commits but total is 14'
     );
   });
 });

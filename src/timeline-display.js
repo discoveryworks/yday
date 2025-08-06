@@ -11,10 +11,14 @@ class TimelineDisplay {
    * Generate timeline display based on commits and timespan
    * @param {Array} commits - Filtered commits from Step 2
    * @param {Object} timespan - Timespan object from Step 1
+   * @param {boolean} alastairMode - Whether to show week pattern (true) or simple list (false)
    * @returns {Object} Timeline display object
    */
-  generateTimeline(commits, timespan) {
-    if (timespan.type === 'single-day') {
+  generateTimeline(commits, timespan, alastairMode = false) {
+    if (alastairMode) {
+      // Alastair mode always shows week pattern, even for single-day queries
+      return this.generateWeekPatternDisplay(commits, timespan);
+    } else if (timespan.type === 'single-day') {
       return this.generateSingleDayDisplay(commits, timespan);
     } else {
       return this.generateWeekPatternDisplay(commits, timespan);
@@ -42,13 +46,19 @@ class TimelineDisplay {
    * Generate week pattern display for multi-day queries
    */
   generateWeekPatternDisplay(commits, timespan) {
-    // Calculate the Monday of the current week for pattern generation
-    const now = new Date();
-    const dayOfWeek = now.getDay();
+    // Calculate the Monday of the week containing the timespan
+    // For single-day queries (like yesterday), show the week containing that day
+    // For multi-day queries, show the week containing the end date
+    const referenceDate = timespan.type === 'single-day' 
+      ? (timespan.date || timespan.startDate)
+      : timespan.endDate;
+      
+    const dayOfWeek = referenceDate.getUTCDay();
     const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - daysFromMonday);
-    monday.setHours(0, 0, 0, 0);
+    const monday = new Date(referenceDate);
+    monday.setUTCDate(referenceDate.getUTCDate() - daysFromMonday);
+    monday.setUTCHours(0, 0, 0, 0);
+    
     
     const items = commits.map(repoData => {
       const pattern = this.generateWeekPattern(repoData, monday);
@@ -64,7 +74,8 @@ class TimelineDisplay {
       weekday: 'long', 
       month: 'long', 
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'UTC'
     });
     
     return {
@@ -82,18 +93,19 @@ class TimelineDisplay {
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
       const day = new Date(monday);
-      day.setDate(monday.getDate() + i);
+      day.setUTCDate(monday.getUTCDate() + i);
       weekDays.push({
         date: day,
         commits: 0
       });
     }
     
+    
     // Map commits to week days
     repoData.commits.forEach(commit => {
       if (commit.authorDate) {
         const commitDate = new Date(commit.authorDate);
-        commitDate.setHours(0, 0, 0, 0); // Normalize to start of day
+        commitDate.setUTCHours(0, 0, 0, 0); // Normalize to start of day in UTC
         
         // Find which day of the week this commit belongs to
         const dayIndex = weekDays.findIndex(day => 

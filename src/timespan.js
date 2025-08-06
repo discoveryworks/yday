@@ -36,6 +36,10 @@ class TimespanAnalyzer {
       return this.handleTodayOption(currentDate);
     }
     
+    if (options.prev) {
+      return this.handlePrevWeek(currentDate);
+    }
+    
     // Default: smart yesterday logic
     return this.handleSmartYesterday(currentDate);
   }
@@ -190,6 +194,36 @@ class TimespanAnalyzer {
   }
   
   /**
+   * Handle --prev option (previous week)
+   */
+  handlePrevWeek(currentDate) {
+    // Calculate the previous Monday-Sunday week
+    const today = new Date(currentDate);
+    const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+    
+    // Find this week's Monday
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const thisMonday = new Date(today);
+    thisMonday.setDate(today.getDate() - daysFromMonday);
+    
+    // Previous week is 7 days before this Monday
+    const prevMonday = new Date(thisMonday);
+    prevMonday.setDate(thisMonday.getDate() - 7);
+    
+    // Previous week's Sunday
+    const prevSunday = new Date(prevMonday);
+    prevSunday.setDate(prevMonday.getDate() + 6);
+    
+    return {
+      type: 'multi-day',
+      startDate: new Date(Date.UTC(prevMonday.getUTCFullYear(), prevMonday.getUTCMonth(), prevMonday.getUTCDate(), 0, 0, 0, 0)),
+      endDate: new Date(Date.UTC(prevSunday.getUTCFullYear(), prevSunday.getUTCMonth(), prevSunday.getUTCDate(), 23, 59, 59, 999)),
+      days: 7,
+      description: `previous week`
+    };
+  }
+  
+  /**
    * Handle default smart yesterday logic
    */
   handleSmartYesterday(currentDate) {
@@ -216,7 +250,7 @@ class TimespanAnalyzer {
       type: 'smart-yesterday',
       startDate,
       endDate,
-      description: `${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`
+      description: `yesterday, ${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`
     };
   }
   
