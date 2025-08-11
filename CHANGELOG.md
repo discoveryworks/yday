@@ -64,6 +64,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration guidance and examples
 - Project overview and architecture documentation in CLAUDE.md
 
+## [0.2.1] - 2025-08-11
+
+### Fixed
+- **Critical Alastair Timeline Bug**: Fixed `yday -a` showing "No commits found" despite existing commits
+  - Root cause: git-standup's `-A` and `-B` flags (date range) don't work reliably
+  - Solution: Reverted to `-d` (days back) with proper timespan filtering
+  - Now correctly finds and displays commits from yesterday and specific days
+- **Test Suite Stability**: 
+  - Added comprehensive regression tests for Alastair timeline functionality
+  - Skipped obsolete tests using deprecated Timeline class
+  - Fixed date display tests to handle smart descriptions ("since Friday", "yesterday")
+
+### Added  
+- **Documentation**: Updated README to clarify npm package not yet published
+- **Regression Tests**: Added `alastair-timeline-debug.test.js` to prevent future timeline bugs
+- **Installation Guide**: Added development installation instructions
+
+### Technical Improvements
+- `buildStandupArgs()`: Calculate days back dynamically, use `-d` instead of `-A`/`-B`
+- Maintained existing timespan filtering logic in `analyzeCommits()`
+- Enhanced error handling and test coverage for timeline edge cases
+
 ## [Unreleased]
 
 ### Planned Features
