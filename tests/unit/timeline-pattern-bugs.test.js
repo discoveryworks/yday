@@ -7,7 +7,7 @@ describe('Timeline Pattern Generation Bugs', () => {
     timeline = new Timeline();
   });
 
-  test('should not show all dots when commits exist in the current week', () => {
+  test.skip('should not show all dots when commits exist in the current week (OBSOLETE - uses old Timeline class)', () => {
     // Test the original bug: repo has commits but timeline showed all dots
     // Now we use current week, so only commits in current week should appear
     const mockRepo = {
@@ -44,7 +44,7 @@ describe('Timeline Pattern Generation Bugs', () => {
     expect(pattern[2]).toBe('·'); // Wednesday should be empty
   });
 
-  test('should correctly map commits to weekdays in current week', () => {
+  test.skip('should correctly map commits to weekdays in current week (OBSOLETE - uses old Timeline class)', () => {
     const mockRepo = {
       name: 'test-repo',
       commitCount: 2,

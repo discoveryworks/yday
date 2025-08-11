@@ -30,9 +30,24 @@ Anyone who works in multiple repos and juggles multiple projects.
 
 ## Installation
 
-### npm (Recommended)
+### Development Version (Current)
+The package is not yet published to npm. Install from source:
+
 ```shell
-npm install -g yday
+# Clone the repository
+git clone https://github.com/discoveryworks/yday.git
+cd yday
+
+# Install dependencies
+npm install
+
+# Link globally for development
+npm link
+```
+
+### npm (Coming Soon)
+```shell
+npm install -g yday  # Not yet available
 ```
 
 ### Manual Installation

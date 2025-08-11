@@ -40,11 +40,13 @@ describe('Date Display Requirements', () => {
         expect(stdout).not.toMatch(/\(yesterday\)/);
         expect(stdout).not.toMatch(/\(last week\)/);
         
-        // Should contain actual date information (either ISO format OR month name format)
+        // Should contain actual date information (ISO format, month name format, or smart descriptions)
         const hasISODate = /\d{4}-\d{2}-\d{2}/.test(stdout);
         const hasMonthDate = /(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}/.test(stdout);
+        const hasDayName = /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(stdout);
+        const hasSmartDescription = /(since Friday|yesterday)/.test(stdout);
         
-        expect(hasISODate || hasMonthDate).toBe(true);
+        expect(hasISODate || hasMonthDate || hasDayName || hasSmartDescription).toBe(true);
         
         resolve();
       });

@@ -94,16 +94,17 @@ class CommitAnalyzer {
    * @returns {Array} git-standup arguments
    */
   buildStandupArgs(timespan) {
-    // Use git-standup's -A (after) and -B (before) flags for precise date ranges
-    // instead of -d (days back) which can include unwanted commits
+    // ISSUE: git-standup's -A and -B flags don't work reliably for date ranges
+    // SOLUTION: Use -d (days back) but filter results by timespan in analyzeCommits()
     
-    // Format dates as YYYY-MM-DD for git-standup
-    const startDateStr = timespan.startDate.toISOString().substring(0, 10);
-    const endDateStr = timespan.endDate.toISOString().substring(0, 10);
+    // Calculate days back from today to the start of the timespan
+    const now = new Date();
+    const daysBack = Math.ceil((now - timespan.startDate) / (1000 * 60 * 60 * 24));
     
+    // Use a reasonable maximum to avoid too much data
+    const maxDaysBack = Math.min(daysBack + 1, 7); // Add 1 day buffer, max 7 days
     
-    // Use precise date range and ISO format for exact timestamps
-    return ['-A', startDateStr, '-B', endDateStr, '-D', 'iso'];
+    return ['-d', maxDaysBack.toString(), '-D', 'iso'];
   }
   
   /**
