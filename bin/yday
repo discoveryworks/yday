@@ -86,7 +86,7 @@ Examples:
     $ yday -A "Jul 1 2025"
     $ yday -B "2025/07/31"
 
-  Visual timeline (numbers by default):
+  Visual "Alastair" timeline (show numbers by default); more at https://alastairjohnston.com/projects-the-alastair-method/:
     $ yday --alastair
     $ yday --alastair --symbols  # Use x/· symbols instead
 
