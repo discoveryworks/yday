@@ -48,7 +48,7 @@ node bin/yday --help
 
 Running `yday` on a Monday might return
 
-    ## Git Repository Activity in /Users/developer/workspace (yesterday, Friday July 05)...
+    ## Git Repository Activity in `~/workspace` (yesterday, Friday July 05)...
 
     | Repo                | Commits | Summary                           |
     |---------------------|---------|-----------------------------------|

@@ -137,8 +137,9 @@ class Yday {
 
   renderSemanticTable(analysis, timeConfig) {
     const timeDesc = this.timePeriods.getDescription(timeConfig);
+    const displayDir = analysis.parentDir.replace(process.env.HOME, '~');
     
-    console.log(`### Git Repository Activity in \`${analysis.parentDir}\` (${timeDesc})...\n`);
+    console.log(`### Git Repository Activity in \`${displayDir}\` (${timeDesc})...\n`);
     
     if (analysis.repos.length === 0) {
       console.log('| Repo | Commits | Summary |');
@@ -172,7 +173,8 @@ class Yday {
 
   renderTimelineTableClean(timeline, timespan, parentDir, showDetails = false, showNumbers = true) {
     // Create a consistent header format like the semantic output
-    console.log(`### Alastair timeline in \`${parentDir}\` for ${timeline.title} (${timespan.description})\n`);
+    const displayDir = parentDir.replace(process.env.HOME, '~');
+    console.log(`### Alastair timeline in \`${displayDir}\` for ${timeline.title} (${timespan.description})\n`);
     
     if (timeline.displayType === 'single-day') {
       // Simple list view for single-day queries
