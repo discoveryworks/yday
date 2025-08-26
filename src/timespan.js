@@ -246,11 +246,19 @@ class TimespanAnalyzer {
     const startDate = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 0, 0, 0, 0));
     const endDate = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 23, 59, 59, 999));
     
+    // Create appropriate description based on what day we're looking back to
+    let description;
+    if (currentDay === 1) { // Monday looking back to Friday
+      description = `since ${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    } else {
+      description = `yesterday, ${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    }
+    
     return {
       type: 'smart-yesterday',
       startDate,
       endDate,
-      description: `yesterday, ${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`
+      description
     };
   }
   

@@ -86,6 +86,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maintained existing timespan filtering logic in `analyzeCommits()`
 - Enhanced error handling and test coverage for timeline edge cases
 
+## [0.2.2] - 2025-08-26
+
+### Added
+- **Actual Date Display**: Output now includes specific dates for better clarity after vacation
+  - Smart Monday behavior: `"since Friday, August 2"` instead of `"yesterday, Friday, August 2"` 
+  - All time descriptions include actual dates: `"yesterday, Monday, August 25"` instead of just `"yesterday"`
+  - Specific day queries show dates: `"last friday, Friday, August 22"` instead of just `"last friday"`
+
+### Changed
+- **Directory Display**: Show user-friendly `~/workspace` instead of full `/Users/user/workspace` paths
+  - Updated both semantic and timeline output headers
+  - Consistent with typical terminal conventions and documentation examples
+- **Documentation**: Updated README examples to use tilde notation
+
+### Technical Improvements
+- Enhanced `handleSmartYesterday()` to provide accurate descriptions based on actual lookback period
+- Improved date formatting consistency across all time period descriptions
+
 ## [Unreleased]
 
 ### Planned Features

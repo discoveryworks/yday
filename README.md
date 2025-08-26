@@ -114,6 +114,8 @@ npm run test:bdd -- features/user_workflows.feature
 
 ## Release Process
 
+- update CHANGELOG.md
+
 ### npm Publishing
 ```bash
 npm run test:all            # Ensure all tests pass
