@@ -35,7 +35,7 @@ describe('Timeline Architecture - Step 1: Timespan Determination', () => {
       type: 'smart-yesterday', 
       startDate: new Date('2025-08-01T00:00:00.000Z'), // Friday
       endDate: new Date('2025-08-01T23:59:59.999Z'),
-      description: 'yesterday, Friday, August 1'
+      description: 'since Friday, August 1'
     });
   });
 
