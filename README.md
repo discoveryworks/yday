@@ -114,14 +114,62 @@ npm run test:bdd -- features/user_workflows.feature
 
 ## Release Process
 
-- update CHANGELOG.md
+Follow these steps to release a new version:
 
-### npm Publishing
+### 1. Pre-Release Checks
 ```bash
-npm run test:all            # Ensure all tests pass
-npm run version:patch       # or version:minor, version:major, following Semantic Versioning
+# Ensure tests pass
+npm test
+
+# Review git status and commit any pending changes
+git status
+git add .
+git commit -m "feat: your changes here"
+```
+
+### 2. Update Documentation
+```bash
+# Update CHANGELOG.md with new features, fixes, and breaking changes
+# Follow the existing format and semantic versioning guidelines
+
+# Test the changes work as expected
+./bin/yday -a --verbose
+```
+
+### 3. Version and Tag
+```bash
+# Bump version following semantic versioning
+npm run version:patch       # for bug fixes (0.2.1 → 0.2.2)  
+npm run version:minor       # for new features (0.2.2 → 0.3.0)
+npm run version:major       # for breaking changes (0.2.2 → 1.0.0)
+```
+
+### 4. Push to Repository  
+```bash
+git push                    # Push commits
+git push --tags             # Push version tag
+```
+
+### 5. Publish to npm
+```bash
 npm publish                 # Publish to npm registry
-git push && git push --tags # Push git changes and tags
+npm view yday               # Verify successful publication
+```
+
+### 6. Create GitHub Release
+```bash
+# Create release with changelog notes
+gh release create v0.2.2 --title "v0.2.2: Feature Description" --notes "Release notes here"
+
+# Or create manually at: https://github.com/discoveryworks/yday/releases
+```
+
+### 7. Verify Release
+```bash
+# Test fresh installation
+npm install -g yday@latest
+yday --version              # Should show new version
+yday -a                     # Test functionality
 ```
 
 ## Why "yday"?
