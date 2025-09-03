@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-09-03
+
+### Added
+- **Previous Week Day Targeting**: New `--prev-*` flags for accessing previous week's days
+  - `--prev-monday` through `--prev-sunday`: Target specific days from the previous week
+  - Always goes back 7+ days to ensure it's the previous week's occurrence
+  - Complements existing `--last-*` flags which find the most recent occurrence
+  - Example: On Wednesday, `--last-tuesday` = yesterday, `--prev-tuesday` = previous week
+
+### Enhanced
+- **Improved Timespan Architecture**: Extended timespan analyzer with comprehensive prev-day support
+  - New `handlePrevDay()` method for previous week targeting
+  - New `findPrevWeekOccurrenceOfDay()` with consistent 7+ day lookback
+  - Maintains compatibility with legacy timeConfig format
+
+### Fixed
+- **Test Reliability**: Increased timeout limits for integration tests to prevent flaky failures
+- **Date Calculation Edge Cases**: Comprehensive test coverage for timezone and UTC date handling
+
+### Technical
+- Added `TimespanAnalyzer.convertTimespanToLegacyFormat()` compatibility layer
+- Updated main application flow to use new timespan analyzer
+- Created comprehensive test suite for prev-day functionality with 95+ test scenarios
+
 ## [0.1.1] - 2025-07-31
 
 ### Fixed
