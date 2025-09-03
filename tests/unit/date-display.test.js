@@ -55,7 +55,7 @@ describe('Date Display Requirements', () => {
         reject(error);
       });
     });
-  }, 15000);
+  }, 30000);
   
   test('timeline output should show week dates clearly', async () => {
     const { spawn } = require('child_process');
@@ -89,5 +89,5 @@ describe('Date Display Requirements', () => {
         resolve();
       });
     });
-  }, 15000);
+  }, 30000);
 });

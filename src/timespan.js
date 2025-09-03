@@ -50,13 +50,23 @@ class TimespanAnalyzer {
   hasSpecificDayOption(options) {
     return options.lastMonday || options.lastTuesday || options.lastWednesday ||
            options.lastThursday || options.lastFriday || options.lastSaturday ||
-           options.lastSunday || options.lastWorkday;
+           options.lastSunday || options.lastWorkday ||
+           options.prevMonday || options.prevTuesday || options.prevWednesday ||
+           options.prevThursday || options.prevFriday || options.prevSaturday ||
+           options.prevSunday;
   }
   
   /**
    * Handle --last-tuesday, --last-monday, etc.
    */
   handleSpecificDay(options, currentDate) {
+    // Handle prev-day options first (previous week)
+    if (options.prevMonday || options.prevTuesday || options.prevWednesday ||
+        options.prevThursday || options.prevFriday || options.prevSaturday ||
+        options.prevSunday) {
+      return this.handlePrevDay(options, currentDate);
+    }
+    
     let targetDay;
     let description;
     
@@ -114,6 +124,26 @@ class TimespanAnalyzer {
   }
   
   /**
+   * Find the previous week's occurrence of a specific day of week
+   * Always goes back at least 7 days to ensure it's in the previous week
+   * @param {number} targetDay - 0=Sunday, 1=Monday, ..., 6=Saturday  
+   * @param {Date} currentDate - Reference date
+   * @returns {Date} The target date in the previous week
+   */
+  findPrevWeekOccurrenceOfDay(targetDay, currentDate) {
+    const current = new Date(currentDate);
+    
+    // Find the most recent occurrence of the target day (could be this week or last week)
+    const mostRecentTargetDay = this.findLastOccurrenceOfDay(targetDay, currentDate);
+    
+    // Go back exactly 7 days from that to get the previous week's occurrence
+    const prevWeekTargetDay = new Date(mostRecentTargetDay);
+    prevWeekTargetDay.setDate(mostRecentTargetDay.getDate() - 7);
+    
+    return prevWeekTargetDay;
+  }
+  
+  /**
    * Handle --last-workday (skip weekends)
    */
   handleLastWorkday(currentDate) {
@@ -140,6 +170,36 @@ class TimespanAnalyzer {
       startDate: new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0),
       endDate: new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 23, 59, 59, 999),
       description: `${dayNames[targetDate.getDay()]}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`
+    };
+  }
+  
+  /**
+   * Handle --prev-tuesday, --prev-monday, etc. (previous week's occurrence)
+   */
+  handlePrevDay(options, currentDate) {
+    let targetDay;
+    let description;
+    
+    if (options.prevMonday) { targetDay = 1; description = 'Monday'; }
+    else if (options.prevTuesday) { targetDay = 2; description = 'Tuesday'; }
+    else if (options.prevWednesday) { targetDay = 3; description = 'Wednesday'; }
+    else if (options.prevThursday) { targetDay = 4; description = 'Thursday'; }
+    else if (options.prevFriday) { targetDay = 5; description = 'Friday'; }
+    else if (options.prevSaturday) { targetDay = 6; description = 'Saturday'; }
+    else if (options.prevSunday) { targetDay = 0; description = 'Sunday'; }
+    
+    const targetDate = this.findPrevWeekOccurrenceOfDay(targetDay, currentDate);
+    
+    // Create UTC dates to avoid timezone issues in tests
+    const startDate = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 0, 0, 0, 0));
+    const endDate = new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 23, 59, 59, 999));
+    
+    return {
+      type: 'prev-day',
+      date: new Date(Date.UTC(targetDate.getUTCFullYear(), targetDate.getUTCMonth(), targetDate.getUTCDate(), 0, 0, 0, 0)),
+      startDate,
+      endDate,
+      description: `previous ${description}, ${targetDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`
     };
   }
   

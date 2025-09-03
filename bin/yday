@@ -137,6 +137,13 @@ For more information: https://github.com/discoveryworks/yday
   .option("--last-friday", "show last Friday's commits")
   .option("--last-saturday", "show last Saturday's commits")
   .option("--last-sunday", "show last Sunday's commits")
+  .option("--prev-monday", "show previous week's Monday")
+  .option("--prev-tuesday", "show previous week's Tuesday")
+  .option("--prev-wednesday", "show previous week's Wednesday")
+  .option("--prev-thursday", "show previous week's Thursday")
+  .option("--prev-friday", "show previous week's Friday")
+  .option("--prev-saturday", "show previous week's Saturday")
+  .option("--prev-sunday", "show previous week's Sunday")
   .option(
     "--shadow",
     "[NOT YET IMPLEMENTED] - find repos with commits but no GitHub project tracking",

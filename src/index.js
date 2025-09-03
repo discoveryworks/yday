@@ -26,6 +26,22 @@ class Yday {
     this.timelineDisplay = new TimelineDisplay();
     this.timelineValidator = new TimelineValidator();
   }
+  
+  /**
+   * Convert new timespan format to legacy timeConfig format
+   */
+  convertTimespanToLegacyFormat(timespan) {
+    // Calculate days difference for compatibility
+    const daysDiff = Math.ceil((timespan.endDate - timespan.startDate) / (1000 * 60 * 60 * 24));
+    
+    return {
+      type: timespan.type,
+      startDate: timespan.startDate, 
+      endDate: timespan.endDate,
+      days: daysDiff,
+      description: timespan.description
+    };
+  }
 
   async run(options) {
     // Store verbose flag globally for other modules
@@ -44,8 +60,11 @@ class Yday {
       console.log(chalk.gray('Options:', JSON.stringify(options, null, 2)));
     }
     
-    // Determine time period
-    const timeConfig = this.timePeriods.parseOptions(options);
+    // Determine time period using new timespan analyzer
+    const timespan = this.timespanAnalyzer.determineTimespan(options);
+    
+    // Create compatibility timeConfig for legacy components
+    const timeConfig = this.convertTimespanToLegacyFormat(timespan);
     
     if (this.verbose) {
       console.log(chalk.gray('Time config:', JSON.stringify(timeConfig, null, 2)));
@@ -136,7 +155,7 @@ class Yday {
   }
 
   renderSemanticTable(analysis, timeConfig) {
-    const timeDesc = this.timePeriods.getDescription(timeConfig);
+    const timeDesc = timeConfig.description || 'recent activity';
     const displayDir = analysis.parentDir.replace(process.env.HOME, '~');
     
     console.log(`### Git Repository Activity in \`${displayDir}\` (${timeDesc})...\n`);

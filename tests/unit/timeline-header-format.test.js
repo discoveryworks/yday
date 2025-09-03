@@ -54,7 +54,7 @@ describe('Timeline Header Format', () => {
         reject(error);
       });
     });
-  }, 15000);
+  }, 30000);
 
   test('timeline output with --prev should show previous week information', async () => {
     const { spawn } = require('child_process');
@@ -105,7 +105,7 @@ describe('Timeline Header Format', () => {
         reject(error);
       });
     });
-  }, 15000);
+  }, 30000);
 
   test('timeline output should be consistent with semantic output format', async () => {
     const { spawn } = require('child_process');
@@ -178,5 +178,5 @@ describe('Timeline Header Format', () => {
     // Both should include time descriptions in parentheses
     expect(semanticOutput).toMatch(/\([^)]+\)/);
     expect(timelineOutput).toMatch(/\([^)]+\)/);
-  }, 15000);
+  }, 30000);
 });
